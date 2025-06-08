@@ -1,4 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <a href="https://hsphere.vercel.app/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/bd361379-3cb1-40f1-ba53-f6a26f30a103">
+      <img alt="logo" src="https://github.com/user-attachments/assets/bd361379-3cb1-40f1-ba53-f6a26f30a103" height="128">
+    </picture>
+  </a>
+  <h3>All in one healthcare solution.</h3>
+
+<a href="https://qapi.vercel.app"><img alt="QUARISTA logo" src="https://img.shields.io/badge/MADE%20BY%20TEAM%20QUARISTA-000000.svg?style=for-the-badge&logo=Vercel&labelColor=000"></a>
+<a href="https://www.npmjs.com/"><img alt="NPM version" src="https://img.shields.io/npm/v/next.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://github.com/randeepajayasekara/quarista-management-panel/license.md"><img alt="License" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000"></a>
+</div>
+<hr/>
 
 ## Getting Started
 
