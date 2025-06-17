@@ -8,6 +8,7 @@ import {
   HomeIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
+import { ModeToggle } from "./components/features/toggles/theme-toggle";
 
 export default function NotFound() {
   const { resolvedTheme } = useTheme();
@@ -118,6 +119,8 @@ export default function NotFound() {
           We're sorry, the page you are looking for does not exist or has been
           moved.
         </motion.p>
+
+        <ModeToggle />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <motion.div
