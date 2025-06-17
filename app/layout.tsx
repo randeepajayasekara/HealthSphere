@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fixedFont = Poppins({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "500",
 });
 
 export const metadata: Metadata = {
@@ -26,9 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="HealthSphere" />
+      </head>
       <Analytics />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={fixedFont.className}
       >
         {children}
       </body>
