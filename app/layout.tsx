@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/app/components/features/theme-provider";
 
 import "./globals.css";
 
-const poppins = Poppins({
+const fixedFont = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
@@ -47,9 +47,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={poppins.variable}>
+    <html lang="en" suppressHydrationWarning className={fixedFont.variable}>
       <head />
-      <body className={poppins.className}>
+      <body className={fixedFont.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
