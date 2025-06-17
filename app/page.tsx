@@ -55,15 +55,7 @@ export default function Home() {
         ${isPlayerVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
         <div className="p-4 bg-black bg-opacity-70 rounded-lg border border-green-500 shadow-lg shadow-green-500/30">
           <h2 className="text-green-500 text-xl mb-4 font-mono tracking-wide glitch-text">HEAR THIS OUT!</h2>
-          <iframe
-            src="https://open.spotify.com/embed/track/1CDQzbCz4KSQxHe7LMEgRM?utm_source=generator" 
-            width="100%"
-            height="80"
-            frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            className="rounded"
-          ></iframe>
+          
         </div>
       </div>
 
