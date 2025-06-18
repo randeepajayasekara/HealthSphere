@@ -99,7 +99,8 @@ export default function Home() {
                 <button className="bg-transparent border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600/10 font-semibold px-6 py-3 rounded-lg transition-colors duration-300">
                   Learn More
                 </button>
-                <ModeToggle className="ml-4" />
+                <div className="ml-4"></div>
+                <ModeToggle />
               </motion.div>
             </div>
             <div className="w-full md:w-1/2 mt-12 md:mt-0">
