@@ -63,10 +63,10 @@ export default function GlobalHeader() {
           <Link href="/" className="flex items-center">
             <div className="relative w-40 h-auto mr-2">
               <Image
-                src="https://i.postimg.cc/yYyqGddT/Healtgphere-Logo-Text.png"
+                src="https://i.postimg.cc/DwF2fbHb/hashedlogo.png"
                 alt="HealthSphere"
-                width={192}
-                height={48}
+                width={500}
+                height={250}
                 priority
                 className="object-contain"
               />
@@ -201,7 +201,7 @@ export default function GlobalHeader() {
               >
                 <div className="relative w-36 h-auto mr-2">
                   <Image
-                    src="https://i.postimg.cc/yYyqGddT/Healtgphere-Logo-Text.png"
+                    src="https://i.postimg.cc/DwF2fbHb/hashedlogo.png"
                     alt="HealthSphere"
                     width={192}
                     height={48}
