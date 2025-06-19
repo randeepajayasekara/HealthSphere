@@ -12,8 +12,9 @@ import {
   Globe,
   ChevronDown,
   Home,
-  Activity,
-  Stethoscope,
+  MessageSquareQuote,
+  MessageSquareShare,
+  Compass,
 } from "lucide-react";
 
 import {
@@ -24,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 export default function GlobalHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -52,7 +53,7 @@ export default function GlobalHeader() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
         isScrolled
-          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm py-3"
+          ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md shadow-sm py-3"
           : "bg-transparent py-5"
       }`}
     >
@@ -86,10 +87,10 @@ export default function GlobalHeader() {
                 >
                   <Link
                     href="/"
-                    className="flex items-center px-4 py-2 rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    className="flex items-center px-4 py-2 rounded-md text-sm font-medium text-red-200 dark:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <Home className="w-4 h-4 mr-1" />
-                    Back Home
+                    Home
                   </Link>
                 </motion.div>
               )}
@@ -125,29 +126,26 @@ export default function GlobalHeader() {
               Guide
             </Link>
 
-              
             {/* Language Dropdown */}
             <div className="ml-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-9 gap-1">
-                  <Globe className="h-4 w-4" />
-                  <span>EN</span>
-                  <ChevronDown className="h-3 w-3 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-40 animate-in fade-in-80 zoom-in-95"
-              >
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Español</DropdownMenuItem>
-                <DropdownMenuItem>Français</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9 gap-1">
+                    <Globe className="h-4 w-4" />
+                    <span>EN</span>
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-40 animate-in fade-in-80 zoom-in-95"
+                >
+                  <DropdownMenuItem>English</DropdownMenuItem>
+                  <DropdownMenuItem>සිංහල</DropdownMenuItem>
+                  <DropdownMenuItem>தமிழ்</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-
-            
 
             {/* Auth Buttons */}
             <Link href="/login">
@@ -189,9 +187,11 @@ export default function GlobalHeader() {
       {/* Mobile Menu Dialog */}
       <Dialog open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <DialogContent
-          className="sm:max-w-full h-[80vh] p-0 bg-white dark:bg-gray-900 border-none"
+          className="sm:max-w-full h-[80vh] p-0 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-lg border-none"
           showCloseButton={false}
+          aria-describedby={undefined}
         >
+          <DialogTitle className="sr-only">Mobile Navigation Menu</DialogTitle>
           <div className="flex flex-col space-y-4 p-6">
             <div className="flex justify-between items-center mb-6">
               <Link
@@ -199,17 +199,16 @@ export default function GlobalHeader() {
                 className="flex items-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <div className="relative w-10 h-10 mr-2">
+                <div className="relative w-36 h-auto mr-2">
                   <Image
-                    src="/icon0.svg"
-                    alt="HealthSphere Logo"
-                    fill
+                    src="https://i.postimg.cc/yYyqGddT/Healtgphere-Logo-Text.png"
+                    alt="HealthSphere"
+                    width={192}
+                    height={48}
+                    priority
                     className="object-contain"
                   />
                 </div>
-                <span className="font-bold text-xl text-gray-800 dark:text-white">
-                  HealthSphere
-                </span>
               </Link>
               <Button
                 variant="ghost"
@@ -235,28 +234,40 @@ export default function GlobalHeader() {
                 Home
               </Link>
               <Link
-                href="/services"
+                href="/forum"
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
-                  pathname === "/services"
+                  pathname === "/forum"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
                     : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Activity className="w-5 h-5 mr-3" />
-                Services
+                <MessageSquareShare className="w-5 h-5 mr-3" />
+                Connect
               </Link>
               <Link
-                href="/about"
+                href="/blog"
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
-                  pathname === "/about"
+                  pathname === "/blog"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
                     : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Stethoscope className="w-5 h-5 mr-3" />
-                About
+                <MessageSquareQuote className="w-5 h-5 mr-3" />
+                Blog
+              </Link>
+              <Link
+                href="/guide"
+                className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
+                  pathname === "/guide"
+                    ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
+                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Compass className="w-5 h-5 mr-3" />
+                Guide
               </Link>
             </nav>
 
@@ -270,10 +281,10 @@ export default function GlobalHeader() {
                   <Globe className="w-4 h-4 mr-2" /> English
                 </Button>
                 <Button variant="ghost" className="justify-start" size="sm">
-                  <Globe className="w-4 h-4 mr-2" /> Español
+                  <Globe className="w-4 h-4 mr-2" /> සිංහල
                 </Button>
                 <Button variant="ghost" className="justify-start" size="sm">
-                  <Globe className="w-4 h-4 mr-2" /> Français
+                  <Globe className="w-4 h-4 mr-2" /> தமிழ்
                 </Button>
               </div>
             </div>
