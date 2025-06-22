@@ -9,7 +9,7 @@ export default function LoginPage() {
           <a href="/" className="flex items-center gap-2 font-medium">
             <Image
               src="https://i.postimg.cc/DwF2fbHb/hashedlogo.png"
-              width={320}
+              width={640}
               height={320}
               priority
               alt="Healthsphere"

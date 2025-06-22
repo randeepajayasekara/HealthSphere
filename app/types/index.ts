@@ -7,7 +7,7 @@
 // User related types
 // -----------------------------------------------------------------------------
 
-export type UserRole = 'patient' | 'doctor' | 'nurse' | 'admin' | 'receptionist' | 'pharmacist' | 'lab_technician';
+export type UserRole = 'patient' | 'doctor' | 'nurse' | 'admin' | 'receptionist' | 'pharmacist' | 'lab_technician' | 'hospital_management';
 
 export interface User {
     id: string;
@@ -17,7 +17,7 @@ export interface User {
     role: UserRole;
     phone?: string;
     dateOfBirth?: Date;
-    gender?: 'male' | 'female' | 'other' | 'non-binary' | 'transgender' | 'prefer_not_to_say';
+    gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
     address?: Address;
     profileImage?: string;
     createdAt: Date;
@@ -81,6 +81,80 @@ export interface AdminProfile extends User {
     role: 'admin';
     department?: string;
     permissions: Permission[];
+}
+
+export interface HospitalManagementProfile extends User {
+    role: 'hospital_management';
+    managedDepartments: string[]; // IDs of departments managed
+    managementLevel: 'junior' | 'senior' | 'executive';
+    staffResponsibilities: StaffResponsibility[];
+    permissions: HospitalManagementPermission[];
+    certifications?: Certification[];
+    reportsTo?: string; // ID of supervisor (if applicable)
+    performanceMetrics?: PerformanceMetric[];
+    schedulingAuthority: boolean;
+    budgetAuthority: boolean;
+    hiringAuthority: boolean;
+}
+
+export interface StaffResponsibility {
+    staffType: 'doctor' | 'nurse' | 'receptionist' | 'lab_technician' | 'pharmacist';
+    departments: string[]; // Department IDs
+    responsibilities: string[];
+}
+
+export interface HospitalManagementPermission extends Permission {
+    staffManagement: StaffManagementPermission;
+    departmentManagement: DepartmentManagementPermission;
+    resourceAllocation: boolean;
+    reportingAccess: ReportingAccessLevel;
+}
+
+export interface StaffManagementPermission {
+    hiring: boolean;
+    termination: boolean;
+    performanceReview: boolean;
+    scheduling: boolean;
+    salaryManagement: boolean;
+}
+
+export interface DepartmentManagementPermission {
+    budgetControl: boolean;
+    resourceAllocation: boolean;
+    policySettings: boolean;
+    qualityControl: boolean;
+}
+
+export type ReportingAccessLevel = 'none' | 'basic' | 'intermediate' | 'advanced' | 'full';
+
+export interface Certification {
+    name: string;
+    issuingBody: string;
+    issueDate: Date;
+    expiryDate?: Date;
+    verificationId?: string;
+    documentUrl?: string;
+}
+
+export interface PerformanceMetric {
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+    metrics: {
+        category: string;
+        score: number;
+        target: number;
+        notes?: string;
+    }[];
+    overallRating: number; // 1-5 scale
+    reviewedBy: string; // User ID
+    reviewDate: Date;
+    acknowledgement?: {
+        acknowledged: boolean;
+        date?: Date;
+        comments?: string;
+    };
 }
 
 // -----------------------------------------------------------------------------
@@ -484,7 +558,7 @@ export interface Notification {
     userId: string;
     title: string;
     message: string;
-    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message';
+    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message' | 'staffing';
     relatedEntityId?: string;
     isRead: boolean;
     createdAt: Date;
@@ -520,6 +594,14 @@ export interface NotificationPreferences {
         start: string; // Format: "HH:MM"
         end: string; // Format: "HH:MM"
     };
+}
+
+export interface StaffingNotification extends Notification {
+    type: 'staffing';
+    staffingIssue: 'understaffed' | 'leave_request' | 'shift_change' | 'overtime_required';
+    departmentId: string;
+    requiredAction: boolean;
+    deadline?: Date;
 }
 
 // -----------------------------------------------------------------------------
@@ -562,6 +644,10 @@ export interface Department {
     contactPhone?: string;
     specialties?: string[];
     facilities?: Facility[];
+    managedBy?: string; // ID of hospital manager
+    budget?: DepartmentBudget;
+    staffing?: DepartmentStaffing;
+    performanceIndicators?: DepartmentPerformanceIndicator[];
 }
 
 export interface Facility {
@@ -599,6 +685,48 @@ export interface MaintenanceSchedule {
     status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
     completionNotes?: string;
     nextMaintenanceDate?: Date;
+}
+
+export interface DepartmentBudget {
+    fiscalYear: string;
+    totalAmount: number;
+    allocated: {
+        category: string;
+        amount: number;
+        used: number;
+        remaining: number;
+    }[];
+    approvedBy: string; // User ID
+    lastUpdated: Date;
+}
+
+export interface DepartmentStaffing {
+    requiredStaff: {
+        role: UserRole;
+        count: number;
+        filled: number;
+        vacancies: number;
+    }[];
+    shiftCoverage: {
+        shift: 'morning' | 'afternoon' | 'night';
+        minimumRequired: number;
+        currentAverage: number;
+    }[];
+    leaveManagement: {
+        approvedLeaves: number;
+        pendingRequests: number;
+    };
+}
+
+export interface DepartmentPerformanceIndicator {
+    name: string;
+    description: string;
+    currentValue: number;
+    targetValue: number;
+    unit: string;
+    lastUpdated: Date;
+    trend: 'increasing' | 'decreasing' | 'stable';
+    status: 'excellent' | 'good' | 'average' | 'concern' | 'critical';
 }
 
 // -----------------------------------------------------------------------------
@@ -664,4 +792,12 @@ export interface QueryParams {
     filter?: FilterParams;
     include?: string[]; // Related entities to include
     fields?: string[]; // Specific fields to return
+}
+
+export interface StaffManagementQueryParams extends QueryParams {
+    departmentFilter?: string[];
+    roleFilter?: UserRole[];
+    performanceRating?: number;
+    certificationFilter?: string[];
+    availabilityFilter?: 'available' | 'on_leave' | 'all';
 }
