@@ -1,0 +1,153 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isActiveUser() {
+      return isAuthenticated() && getUserData().isActive == true && getUserData().accountLocked != true;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isOwner(userId) && isActiveUser();
+      
+      // Users can update their own non-critical data
+      allow update: if isOwner(userId) && isActiveUser() && 
+        !('role' in request.resource.data.diff(resource.data).affectedKeys()) &&
+        !('isActive' in request.resource.data.diff(resource.data).affectedKeys()) &&
+        !('accountLocked' in request.resource.data.diff(resource.data).affectedKeys());
+      
+      // Admins can read/write all user data
+      allow read, write: if hasRole('admin') && isActiveUser();
+      
+      // Hospital management can read staff data
+      allow read: if hasRole('hospital_management') && isActiveUser() && 
+        resource.data.role in ['doctor', 'nurse', 'receptionist', 'pharmacist', 'lab_technician'];
+      
+      // Doctors can read patient data (with appointments)
+      allow read: if hasRole('doctor') && isActiveUser() && resource.data.role == 'patient';
+      
+      // Healthcare staff can read basic patient info
+      allow read: if isActiveUser() && 
+        hasRole('nurse') || hasRole('receptionist') || hasRole('pharmacist') || hasRole('lab_technician') && 
+        resource.data.role == 'patient';
+      
+      // Allow user creation for registration
+      allow create: if request.auth != null && request.resource.data.id == request.auth.uid;
+    }
+
+    // Appointments collection
+    match /appointments/{appointmentId} {
+      // Patients can read/create their own appointments
+      allow read, create: if isActiveUser() && 
+        (resource.data.patientId == request.auth.uid || request.resource.data.patientId == request.auth.uid);
+      
+      // Doctors can read/update appointments they're assigned to
+      allow read, update: if isActiveUser() && hasRole('doctor') && 
+        (resource.data.doctorId == request.auth.uid || request.resource.data.doctorId == request.auth.uid);
+      
+      // Healthcare staff can read/update appointments
+      allow read, update: if isActiveUser() && 
+        (hasRole('nurse') || hasRole('receptionist') || hasRole('admin'));
+      
+      // Admin and hospital management full access
+      allow read, write: if isActiveUser() && (hasRole('admin') || hasRole('hospital_management'));
+    }
+
+    // Medical records collection
+    match /medical_records/{recordId} {
+      // Patients can read their own records
+      allow read: if isActiveUser() && resource.data.patientId == request.auth.uid;
+      
+      // Doctors can read/write records for their patients
+      allow read, write: if isActiveUser() && hasRole('doctor') && 
+        resource.data.doctorId == request.auth.uid;
+      
+      // Healthcare staff can read medical records (limited)
+      allow read: if isActiveUser() && 
+        (hasRole('nurse') || hasRole('pharmacist') || hasRole('lab_technician'));
+      
+      // Admin full access
+      allow read, write: if isActiveUser() && hasRole('admin');
+    }
+
+    // Prescriptions collection
+    match /prescriptions/{prescriptionId} {
+      // Patients can read their own prescriptions
+      allow read: if isActiveUser() && resource.data.patientId == request.auth.uid;
+      
+      // Doctors can create/update prescriptions
+      allow read, write: if isActiveUser() && hasRole('doctor') && 
+        resource.data.doctorId == request.auth.uid;
+      
+      // Pharmacists can read/update prescriptions
+      allow read, update: if isActiveUser() && hasRole('pharmacist');
+      
+      // Admin full access
+      allow read, write: if isActiveUser() && hasRole('admin');
+    }
+
+    // Departments collection
+    match /departments/{departmentId} {
+      // All authenticated users can read department info
+      allow read: if isActiveUser();
+      
+      // Only admin and hospital management can write
+      allow write: if isActiveUser() && (hasRole('admin') || hasRole('hospital_management'));
+    }
+
+    // Audit logs collection
+    match /audit_logs/{logId} {
+      // Only admins can read audit logs
+      allow read: if isActiveUser() && hasRole('admin');
+      
+      // System can write audit logs
+      allow create: if isAuthenticated();
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isActiveUser() && resource.data.userId == request.auth.uid;
+      
+      // System and admins can create notifications
+      allow create: if isAuthenticated();
+      
+      // Users can update their own notifications (mark as read)
+      allow update: if isActiveUser() && resource.data.userId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead', 'readAt']);
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      // Users can read messages they're part of
+      allow read: if isActiveUser() && 
+        (resource.data.senderId == request.auth.uid || resource.data.receiverId == request.auth.uid);
+      
+      // Users can create messages
+      allow create: if isActiveUser() && request.resource.data.senderId == request.auth.uid;
+    }
+
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
