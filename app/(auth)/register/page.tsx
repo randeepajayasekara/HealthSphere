@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { LoginForm } from "@/app/components/layout/Auth/register-form";
+import { RegisterForm } from "@/app/components/layout/Auth/register-form";
 
 export default function LoginPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
+    <div className="grid min-h-svh lg:grid-cols-1">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="/" className="flex items-center gap-2 font-medium">
@@ -18,18 +18,12 @@ export default function LoginPage() {
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
-            <LoginForm />
+          <div className="w-full max-w-sm md:max-w-md lg:max-w-lg">
+            <RegisterForm />
           </div>
         </div>
       </div>
-      <div className="bg-muted relative hidden lg:block">
-        <img
-          src="https://clipart-library.com/8300/1931/Doctor-and-Nurse.png"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
-      </div>
+      
     </div>
   );
 }
