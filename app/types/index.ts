@@ -19,12 +19,25 @@ export interface User {
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
     address?: Address;
-    profileImage?: string;
+    profileImageUrl?: string; // Updated for profile picture
     createdAt: Date;
     updatedAt: Date;
     lastLogin?: Date;
     isActive: boolean;
+    isEmailVerified: boolean; // Added for email verification
     emergencyContact?: EmergencyContact;
+    twoFactorEnabled?: boolean; // Added for 2FA
+    securityQuestions?: SecurityQuestion[]; // Added for account recovery
+    accountLocked?: boolean; // Added for security
+    failedLoginAttempts?: number; // Added for security tracking
+    lastFailedLogin?: Date; // Added for security tracking
+    passwordLastChanged?: Date; // Added for password policy
+    sessionTokens?: string[]; // Added for session management
+}
+
+export interface SecurityQuestion {
+    question: string;
+    answerHash: string; // Hashed answer for security
 }
 
 export interface EmergencyContact {
@@ -166,11 +179,14 @@ export interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
     error?: string;
+    sessionExpiry?: Date;
 }
 
 export interface LoginCredentials {
     email: string;
     password: string;
+    rememberMe?: boolean;
+    twoFactorCode?: string; // Added for 2FA
 }
 
 export interface RegistrationData {
@@ -183,7 +199,30 @@ export interface RegistrationData {
     phone?: string;
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+    address?: Address;
+    profileImageFile?: File; // for backup
+    profileImageUrl?: string;
+    emergencyContact?: EmergencyContact;
+    termsAccepted: boolean;
+    privacyPolicyAccepted: boolean;
 }
+
+// Multi-step registration steps
+export interface RegistrationStep {
+    step: number;
+    title: string;
+    description: string;
+    isCompleted: boolean;
+    isActive: boolean;
+}
+
+export type RegistrationStepType = 
+    | 'personal_info'
+    | 'contact_info'
+    | 'emergency_contact'
+    | 'profile_picture'
+    | 'security_setup'
+    | 'verification';
 
 export interface PasswordResetRequest {
     email: string;
@@ -193,6 +232,37 @@ export interface PasswordResetConfirmation {
     token: string;
     newPassword: string;
     confirmPassword: string;
+}
+
+// Dashboard routes for different roles
+export interface DashboardRoute {
+    role: UserRole;
+    path: string;
+    name: string;
+}
+
+// Session management
+export interface UserSession {
+    userId: string;
+    sessionId: string;
+    createdAt: Date;
+    expiresAt: Date;
+    ipAddress: string;
+    userAgent: string;
+    isActive: boolean;
+}
+
+// Audit logging
+export interface AuditLog {
+    id: string;
+    userId: string;
+    action: string;
+    resource: string;
+    timestamp: Date;
+    ipAddress: string;
+    userAgent: string;
+    success: boolean;
+    details?: Record<string, any>;
 }
 
 // -----------------------------------------------------------------------------
