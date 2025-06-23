@@ -2,15 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'vercel.com',
+      },
     ],
-    domains: ['vercel.com'],
   },
   async headers() {
     return [
