@@ -330,6 +330,12 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     description: 'View system activity',
                     icon: 'history',
                 },
+                {
+                    path: '/admin/blog',
+                    name: 'Blog',
+                    description: 'Manage blog posts',
+                    icon: 'file-text',
+                },
             ],
         },
     ],
