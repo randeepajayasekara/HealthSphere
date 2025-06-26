@@ -346,7 +346,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await logAuditEvent("REGISTER", "AUTH", true, { email: data.email });
 
       // Redirect to patient dashboard
-      router.push("/patient");
+      router.push("/dashboard");
     } catch (error: any) {
       const errorMessage = error.message || "Registration failed";
       setAuthState((prev) => ({
