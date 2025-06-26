@@ -204,7 +204,7 @@ export default function GlobalHeader() {
               >
                 <div className="relative w-36 h-auto mr-2">
                   <Image
-                    src="https://i.postimg.cc/DwF2fbHb/hashed`logo.png"
+                    src="https://i.postimg.cc/DwF2fbHb/hashedlogo.png"
                     alt="HealthSphere"
                     width={192}
                     height={48}
