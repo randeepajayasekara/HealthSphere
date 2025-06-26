@@ -26,6 +26,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ModeToggle } from "../../features/toggles/theme-toggle";
 
 export default function GlobalHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -87,7 +88,7 @@ export default function GlobalHeader() {
                 >
                   <Link
                     href="/"
-                    className="flex items-center px-4 py-2 rounded-md text-sm font-medium text-red-200 dark:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    className="flex items-center px-4 py-2 rounded-md text-sm font-medium text-red-500 dark:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <Home className="w-4 h-4 mr-1" />
                     Home
@@ -96,34 +97,34 @@ export default function GlobalHeader() {
               )}
             </AnimatePresence>
             <Link
-              href="/forum"
+              href="/guide"
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                pathname === "/services"
+                pathname === "/about"
                   ? "text-red-600 dark:text-red-400"
-                  : "text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                  : "text-zinc-700 dark:text-zinc-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
               }`}
             >
-              Connect
+              Guide
             </Link>
             <Link
               href="/blog"
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 pathname === "/about"
                   ? "text-red-600 dark:text-red-400"
-                  : "text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                  : "text-zinc-700 dark:text-zinc-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
               }`}
             >
               Blog
             </Link>
             <Link
-              href="/guide"
+              href="/contact"
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                pathname === "/about"
+                pathname === "/services"
                   ? "text-red-600 dark:text-red-400"
-                  : "text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                  : "text-zinc-700 dark:text-zinc-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
               }`}
             >
-              Guide
+              Help
             </Link>
 
             {/* Language Dropdown */}
@@ -146,6 +147,8 @@ export default function GlobalHeader() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            <ModeToggle />
 
             {/* Auth Buttons */}
             <Link href="/login">
@@ -201,7 +204,7 @@ export default function GlobalHeader() {
               >
                 <div className="relative w-36 h-auto mr-2">
                   <Image
-                    src="https://i.postimg.cc/DwF2fbHb/hashedlogo.png"
+                    src="https://i.postimg.cc/DwF2fbHb/hashed`logo.png"
                     alt="HealthSphere"
                     width={192}
                     height={48}
@@ -226,7 +229,7 @@ export default function GlobalHeader() {
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
                   pathname === "/"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                    : "text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -234,23 +237,23 @@ export default function GlobalHeader() {
                 Home
               </Link>
               <Link
-                href="/forum"
+                href="/contact"
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
                   pathname === "/forum"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                    : "text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <MessageSquareShare className="w-5 h-5 mr-3" />
-                Connect
+                Help
               </Link>
               <Link
                 href="/blog"
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
                   pathname === "/blog"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                    : "text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -262,7 +265,7 @@ export default function GlobalHeader() {
                 className={`flex items-center px-4 py-3 rounded-md text-base font-medium transition-colors ${
                   pathname === "/guide"
                     ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60"
+                    : "text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -272,8 +275,8 @@ export default function GlobalHeader() {
             </nav>
 
             {/* Language Selector in Mobile Menu */}
-            <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+            <div className="pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-700">
+              <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">
                 Language
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -290,7 +293,7 @@ export default function GlobalHeader() {
             </div>
 
             {/* Auth Buttons in Mobile Menu */}
-            <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 flex flex-col space-y-3">
+            <div className="pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-700 flex flex-col space-y-3">
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="outline" className="w-full">
                   Log In
