@@ -17,10 +17,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, Shield, Mail, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Upload, Shield, Mail, CheckCircle, Eye, EyeOff, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { uploadImageToFreeService } from "@/app/utils/image-upload";
+import { format } from "date-fns";
 
 const registrationSteps: RegistrationStep[] = [
   {
@@ -365,22 +368,41 @@ export function RegisterForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={
-                    formData.dateOfBirth
-                      ? formData.dateOfBirth.toISOString().split("T")[0]
-                      : ""
-                  }
-                  onChange={(e) =>
-                    updateFormData({
-                      dateOfBirth: e.target.value
-                        ? new Date(e.target.value)
-                        : undefined,
-                    })
-                  }
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !formData.dateOfBirth && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.dateOfBirth ? (
+                        format(formData.dateOfBirth, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={formData.dateOfBirth}
+                      onSelect={(date) =>
+                        updateFormData({ dateOfBirth: date })
+                      }
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      captionLayout="dropdown"
+                      fromYear={1925}
+                      toYear={new Date().getFullYear()}
+                      defaultMonth={formData.dateOfBirth || new Date(2000, 0)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="gender">Gender</Label>
