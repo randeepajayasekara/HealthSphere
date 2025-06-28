@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { uploadImageToFreeService } from "@/app/utils/image-upload";
 import { format } from "date-fns";
+import { sanitizeToastError } from "@/app/utils/error-sanitizer";
 
 const registrationSteps: RegistrationStep[] = [
   {
@@ -144,15 +145,12 @@ export function RegisterForm() {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        // 5MB limit
         toast.error("Image size should be less than 5MB");
         return;
       }
 
-      // Set loading state
       setProfileImage(file);
 
-      // Create local preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImagePreview(reader.result as string);
@@ -160,14 +158,12 @@ export function RegisterForm() {
       reader.readAsDataURL(file);
 
       try {
-        // Upload image to hosting service
         toast.loading("Uploading image...", { id: "image-upload" });
         const uploadResult = await uploadImageToFreeService(file);
 
         if (uploadResult.success && uploadResult.url) {
-          // Update form data with the hosted image URL
           updateFormData({
-            profileImageUrl: uploadResult.url, // Add this to your RegistrationData type
+            profileImageUrl: uploadResult.url,
           });
           toast.success("Image uploaded successfully!", { id: "image-upload" });
         } else {
@@ -175,7 +171,7 @@ export function RegisterForm() {
         }
       } catch (error) {
         console.error("Image upload error:", error);
-        toast.error("Failed to upload image", { id: "image-upload" });
+        toast.error(sanitizeToastError(error), { id: "image-upload" });
       }
     }
   };
@@ -200,7 +196,7 @@ export function RegisterForm() {
           return false;
         }
         if (formData.password.length < 6) {
-          if (showErrors) toast.error("Password must be at least 6 characters");
+          if (showErrors) toast.error("Password must be at least 6 characters long");
           return false;
         }
         if (formData.password !== formData.confirmPassword) {
@@ -261,7 +257,12 @@ export function RegisterForm() {
       return;
     }
 
-    await register(formData);
+    try {
+      await register(formData);
+    } catch (error) {
+      // Error is handled by the auth context, but we can log it
+      console.error('Registration error:', error);
+    }
   };
 
   const renderStepContent = () => {
