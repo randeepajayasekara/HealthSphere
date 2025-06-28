@@ -33,6 +33,65 @@ export interface User {
     lastFailedLogin?: Date; // Added for security tracking
     passwordLastChanged?: Date; // Added for password policy
     sessionTokens?: string[]; // Added for session management
+    accessibilitySettings?: AccessibilitySettings; // Added for accessibility features
+}
+
+// -----------------------------------------------------------------------------
+// Accessibility related types
+// -----------------------------------------------------------------------------
+
+export interface AccessibilitySettings {
+    oversizedWidget: boolean;
+    screenReader: boolean;
+    contrast: boolean;
+    smartContrast: boolean;
+    highlightLinks: boolean;
+    biggerText: boolean;
+    textSpacing: boolean;
+    pauseAnimations: boolean;
+    hideImages: boolean;
+    dyslexiaFriendly: boolean;
+    cursor: boolean;
+    tooltips: boolean;
+    pageStructure: boolean;
+    lineHeight: number;
+    textAlign: 'left' | 'center' | 'right';
+    dictionary: boolean;
+}
+
+export interface AccessibilityContextType {
+    settings: AccessibilitySettings;
+    updateSetting: <K extends keyof AccessibilitySettings>(key: K, value: AccessibilitySettings[K]) => Promise<void>;
+    resetSettings: () => Promise<void>;
+    applyQuickProfile: (profile: 'motor' | 'blind' | 'dyslexia' | 'cognitive') => Promise<void>;
+}
+
+export type AccessibilityProfile = 'motor' | 'blind' | 'dyslexia' | 'cognitive';
+
+export interface AccessibilityProfileSettings {
+    motor: Partial<AccessibilitySettings>;
+    blind: Partial<AccessibilitySettings>;
+    dyslexia: Partial<AccessibilitySettings>;
+    cognitive: Partial<AccessibilitySettings>;
+}
+
+// -----------------------------------------------------------------------------
+// Layout and Sidebar related types
+// -----------------------------------------------------------------------------
+
+export interface SidebarContextType {
+    isCollapsed: boolean;
+    setIsCollapsed: (collapsed: boolean) => void;
+}
+
+export interface DashboardLayoutProps {
+    children: React.ReactNode;
+}
+
+export interface SidebarToggleEvent extends CustomEvent {
+    detail: {
+        isCollapsed: boolean;
+    };
 }
 
 export interface SecurityQuestion {
@@ -628,7 +687,7 @@ export interface Notification {
     userId: string;
     title: string;
     message: string;
-    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message' | 'staffing';
+    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message' | 'staffing' | 'chatbot' | 'telemedicine';
     relatedEntityId?: string;
     isRead: boolean;
     createdAt: Date;
@@ -658,6 +717,9 @@ export interface NotificationPreferences {
         result: boolean;
         system: boolean;
         message: boolean;
+        staffing: boolean;
+        chatbot: boolean;
+        telemedicine: boolean;
     };
     quietHours?: {
         enabled: boolean;
@@ -672,6 +734,22 @@ export interface StaffingNotification extends Notification {
     departmentId: string;
     requiredAction: boolean;
     deadline?: Date;
+}
+
+export interface ChatbotNotification extends Notification {
+    type: 'chatbot';
+    chatbotIssue: 'knowledge_gap' | 'escalation_needed' | 'policy_update_required' | 'performance_concern';
+    conversationId?: string;
+    requiredRole?: UserRole;
+    autoEscalated: boolean;
+}
+
+export interface TelemedicineNotification extends Notification {
+    type: 'telemedicine';
+    sessionId?: string;
+    issue: 'technical_support_needed' | 'session_ready' | 'waiting_room_full' | 'equipment_check';
+    platform?: string;
+    urgency: 'low' | 'medium' | 'high' | 'critical';
 }
 
 // -----------------------------------------------------------------------------
@@ -870,4 +948,230 @@ export interface StaffManagementQueryParams extends QueryParams {
     performanceRating?: number;
     certificationFilter?: string[];
     availabilityFilter?: 'available' | 'on_leave' | 'all';
+}
+
+// -----------------------------------------------------------------------------
+// Chatbot related types
+// -----------------------------------------------------------------------------
+
+export interface ChatbotConfiguration {
+    id: string;
+    name: string;
+    description?: string;
+    isActive: boolean;
+    version: string;
+    lastUpdated: Date;
+    updatedBy: string; // User ID
+    settings: ChatbotSettings;
+    knowledgeBase: ChatbotKnowledgeBase[];
+    responses: ChatbotResponse[];
+    analytics: ChatbotAnalytics;
+    permissions: ChatbotPermission[];
+}
+
+export interface ChatbotSettings {
+    language: string;
+    responseTime: number; // in milliseconds
+    fallbackEnabled: boolean;
+    escalationEnabled: boolean;
+    learningEnabled: boolean;
+    contextRetention: number; // in minutes
+    maxConversationLength: number;
+    confidenceThreshold: number; // 0-1
+}
+
+export interface ChatbotKnowledgeBase {
+    id: string;
+    category: 'medical' | 'appointment' | 'medication' | 'faq' | 'nursing' | 'policy';
+    topic: string;
+    content: string;
+    keywords: string[];
+    lastUpdated: Date;
+    updatedBy: string; // User ID
+    isActive: boolean;
+    priority: 'low' | 'medium' | 'high';
+    tags: string[];
+}
+
+export interface ChatbotResponse {
+    id: string;
+    intent: string;
+    response: string;
+    alternatives?: string[];
+    followUpQuestions?: string[];
+    escalationTriggers?: string[];
+    mediaAttachments?: string[];
+    lastUpdated: Date;
+    updatedBy: string; // User ID
+    usageCount: number;
+    successRate: number; // 0-1
+}
+
+export interface ChatbotAnalytics {
+    totalInteractions: number;
+    successfulResolutions: number;
+    escalatedConversations: number;
+    userSatisfactionRating: number; // 1-5
+    topQueries: ChatbotQueryAnalytics[];
+    responseTimeMetrics: {
+        average: number;
+        fastest: number;
+        slowest: number;
+    };
+    usageByRole: {
+        role: UserRole;
+        interactionCount: number;
+        satisfactionRating: number;
+    }[];
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+}
+
+export interface ChatbotQueryAnalytics {
+    query: string;
+    frequency: number;
+    successRate: number;
+    averageResolutionTime: number;
+    userRoles: UserRole[];
+}
+
+export interface ChatbotPermission {
+    role: UserRole;
+    canView: boolean;
+    canEdit: boolean;
+    canManageKnowledgeBase: boolean;
+    canViewAnalytics: boolean;
+    canManageResponses: boolean;
+    categories: string[]; // Categories they can manage
+}
+
+export interface ChatbotConversation {
+    id: string;
+    userId: string;
+    userRole: UserRole;
+    startTime: Date;
+    endTime?: Date;
+    messages: ChatbotMessage[];
+    wasEscalated: boolean;
+    escalatedTo?: string; // User ID
+    satisfactionRating?: number; // 1-5
+    resolvedSuccessfully: boolean;
+    category: string;
+    intent: string;
+}
+
+export interface ChatbotMessage {
+    id: string;
+    type: 'user' | 'bot';
+    content: string;
+    timestamp: Date;
+    intent?: string;
+    confidence?: number;
+    attachments?: string[];
+    metadata?: Record<string, any>;
+}
+
+// -----------------------------------------------------------------------------
+// Telemedicine related types
+// -----------------------------------------------------------------------------
+
+export interface TelemedicineSession {
+    id: string;
+    appointmentId: string;
+    patientId: string;
+    doctorId: string;
+    nurseId?: string; // For telemedicine support
+    startTime: Date;
+    endTime?: Date;
+    status: 'scheduled' | 'waiting' | 'in_progress' | 'completed' | 'cancelled' | 'technical_issues';
+    platform: 'zoom' | 'google_meet' | 'microsoft_teams' | 'custom';
+    meetingDetails: VirtualMeetingInfo;
+    technicalSupport?: TelemedicineTechnicalSupport;
+    sessionNotes?: string;
+    prescriptionsIssued?: string[]; // Prescription IDs
+    followUpRequired?: boolean;
+    recordingEnabled?: boolean;
+    recordingUrl?: string;
+}
+
+export interface TelemedicineTechnicalSupport {
+    supportStaffId: string;
+    issuesReported: TechnicalIssue[];
+    resolutionTime?: number; // in minutes
+    satisfactionRating?: number; // 1-5
+}
+
+export interface TechnicalIssue {
+    type: 'audio' | 'video' | 'connection' | 'platform' | 'other';
+    description: string;
+    timestamp: Date;
+    resolved: boolean;
+    resolutionTime?: number; // in minutes
+}
+
+export interface VirtualWaitingRoom {
+    id: string;
+    doctorId: string;
+    currentPatients: VirtualWaitingPatient[];
+    maxCapacity: number;
+    averageWaitTime: number; // in minutes
+    status: 'open' | 'closed' | 'full';
+    settings: VirtualWaitingRoomSettings;
+}
+
+export interface VirtualWaitingPatient {
+    patientId: string;
+    appointmentId: string;
+    joinTime: Date;
+    estimatedWaitTime: number; // in minutes
+    position: number;
+    status: 'waiting' | 'called' | 'in_session' | 'left';
+    technicalCheckCompleted: boolean;
+    checkInCompleted: boolean;
+}
+
+export interface VirtualWaitingRoomSettings {
+    enableTechnicalCheck: boolean;
+    enablePreAppointmentForms: boolean;
+    enableChatSupport: boolean;
+    enableEstimatedWaitTime: boolean;
+    enableQueuePosition: boolean;
+    allowRescheduling: boolean;
+    maxWaitTime: number; // in minutes
+}
+
+export interface TelemedicineAnalytics {
+    totalSessions: number;
+    completedSessions: number;
+    cancelledSessions: number;
+    technicalIssueRate: number; // percentage
+    averageSessionDuration: number; // in minutes
+    patientSatisfactionRating: number; // 1-5
+    doctorSatisfactionRating: number; // 1-5
+    platformUsage: {
+        platform: string;
+        usage: number;
+        satisfactionRating: number;
+    }[];
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+    departmentBreakdown: {
+        departmentId: string;
+        sessionsCount: number;
+        successRate: number;
+    }[];
+}
+
+export interface ElectronicPrescription extends Prescription {
+    telemedicineSessionId: string;
+    digitalSignature: string;
+    verificationCode: string;
+    deliveryMethod: 'pharmacy_pickup' | 'mail_delivery' | 'digital_only';
+    pharmacyInstructions?: string;
+    patientConsent: boolean;
+    prescribedVirtually: boolean;
 }
