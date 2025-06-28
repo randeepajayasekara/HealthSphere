@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/app/contexts/auth-context";
 import { LoginCredentials } from "@/app/types";
+import { sanitizeErrorMessage, sanitizeToastError } from "@/app/utils/error-sanitizer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,15 +37,25 @@ export function LoginForm({ className, ...props }: HTMLMotionProps<"div">) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(credentials);
+    try {
+      await login(credentials);
+    } catch (error) {
+      // Error is already handled by the auth context, but we can add additional handling here if needed
+      console.error('Login error:', error);
+    }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (resetEmail) {
-      await resetPassword(resetEmail);
-      setShowForgotPassword(false);
-      setResetEmail("");
+      try {
+        await resetPassword(resetEmail);
+        setShowForgotPassword(false);
+        setResetEmail("");
+      } catch (error) {
+        // Error handling is done in the auth context
+        console.error('Password reset error:', error);
+      }
     }
   };
 
@@ -134,7 +145,7 @@ export function LoginForm({ className, ...props }: HTMLMotionProps<"div">) {
             <div className="grid gap-4">
               {error && (
                 <div className="rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  {error}
+                  {sanitizeErrorMessage(error)}
                 </div>
               )}
 
