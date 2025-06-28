@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, FileText, Pill, User, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ModeToggle } from '@/app/components/features/toggles/theme-toggle';
 
 export default function PatientDashboard() {
     const { user, logout } = useAuth();
@@ -100,6 +101,7 @@ export default function PatientDashboard() {
                                 </CardContent>
                             </Card>
                         </motion.div>
+                        <ModeToggle/>
                     </div>
                 </main>
             </div>
