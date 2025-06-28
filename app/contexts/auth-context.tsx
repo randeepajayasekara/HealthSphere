@@ -28,6 +28,7 @@ import {
   AuditLog,
 } from "@/app/types";
 import { useRouter } from "next/navigation";
+import { sanitizeErrorMessage, sanitizeToastError } from "@/app/utils/error-sanitizer";
 import toast from "react-hot-toast";
 
 interface AuthContextType extends AuthState {
@@ -252,18 +253,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success("Login successful!");
       await logAuditEvent("LOGIN", "AUTH", true, { email: credentials.email });
     } catch (error: any) {
-      const errorMessage = error.message || "Login failed";
-
+      const sanitizedError = sanitizeErrorMessage(error);
       setAuthState((prev) => ({
         ...prev,
         isLoading: false,
-        error: errorMessage,
+        error: sanitizedError,
       }));
 
-      toast.error(errorMessage);
+      toast.error(sanitizeToastError(error));
       await logAuditEvent("LOGIN", "AUTH", false, {
         email: credentials.email,
-        error: errorMessage,
+        error: sanitizedError,
       });
     }
   };
@@ -348,17 +348,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Redirect to patient dashboard
       router.push("/dashboard");
     } catch (error: any) {
-      const errorMessage = error.message || "Registration failed";
+      const sanitizedError = sanitizeErrorMessage(error);
       setAuthState((prev) => ({
         ...prev,
         isLoading: false,
-        error: errorMessage,
+        error: sanitizedError,
       }));
 
-      toast.error(errorMessage);
+      toast.error(sanitizeToastError(error));
       await logAuditEvent("REGISTER", "AUTH", false, {
         email: data.email,
-        error: errorMessage,
+        error: sanitizedError,
       });
     }
   };
@@ -381,10 +381,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success("Password reset email sent!");
       await logAuditEvent("PASSWORD_RESET_REQUEST", "AUTH", true, { email });
     } catch (error: any) {
-      toast.error("Failed to send password reset email");
+      const sanitizedError = sanitizeErrorMessage(error);
+      toast.error(sanitizeToastError(error));
       await logAuditEvent("PASSWORD_RESET_REQUEST", "AUTH", false, {
         email,
-        error: error.message,
+        error: sanitizedError,
       });
     }
   };
