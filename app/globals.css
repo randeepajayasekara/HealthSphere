@@ -197,3 +197,86 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Accessibility Styles */
+.accessibility-bigger-text {
+  font-size: 1.25em !important;
+}
+
+.accessibility-bigger-text * {
+  font-size: inherit !important;
+}
+
+.accessibility-text-spacing {
+  letter-spacing: 0.1em !important;
+  word-spacing: 0.2em !important;
+}
+
+.accessibility-text-spacing * {
+  letter-spacing: inherit !important;
+  word-spacing: inherit !important;
+  line-height: var(--accessibility-line-height, 1.5) !important;
+}
+
+.accessibility-hide-images img:not([role="presentation"]):not([alt*="icon"]):not([alt*="logo"]) {
+  display: none !important;
+}
+
+.accessibility-dyslexia-friendly {
+  font-family: 'OpenDyslexic', Arial, sans-serif !important;
+}
+
+.accessibility-dyslexia-friendly * {
+  font-family: inherit !important;
+}
+
+.accessibility-cursor {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="red" opacity="0.8"/></svg>'), auto !important;
+}
+
+.accessibility-pause-animations *,
+.accessibility-pause-animations *::before,
+.accessibility-pause-animations *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.accessibility-contrast {
+  filter: contrast(150%) !important;
+}
+
+.accessibility-smart-contrast {
+  filter: contrast(120%) brightness(110%) !important;
+}
+
+.accessibility-highlight-links a {
+  background-color: yellow !important;
+  color: black !important;
+  text-decoration: underline !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+}
+
+.accessibility-oversized-widget button,
+.accessibility-oversized-widget input,
+.accessibility-oversized-widget select,
+.accessibility-oversized-widget textarea {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  font-size: 1.2em !important;
+  padding: 12px !important;
+}
+
+/* Text alignment based on setting */
+body[style*="--accessibility-text-align: center"] * {
+  text-align: center !important;
+}
+
+body[style*="--accessibility-text-align: right"] * {
+  text-align: right !important;
+}
+
+body[style*="--accessibility-text-align: left"] * {
+  text-align: left !important;
+}
