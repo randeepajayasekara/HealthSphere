@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import GlobalHeader from "../components/layout/Global/global-header";
-import { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import { SocialLinksProvider } from "../../contexts/social-links-context";
 import SocialLinksFooter from "../components/layout/Global/social-links-footer";
@@ -66,7 +65,6 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
             </div>
           </div>
         </footer>
-        <Toaster />
       </div>
     </SocialLinksProvider>
   );
