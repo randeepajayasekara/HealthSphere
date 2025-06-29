@@ -65,6 +65,9 @@ import {
   AlignRight,
   Minus,
   Plus,
+  Moon,
+  Sun,
+  Monitor,
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -475,12 +478,13 @@ function AccessibilitySheet({
   );
 }
 
-function SidebarContent({
+export function SidebarContent({
   isCollapsed = false,
   onNavigate,
 }: SidebarContentProps) {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [accessibilityOpen, setAccessibilityOpen] = React.useState(false);
 
   // Don't render if user is not authenticated
@@ -826,13 +830,47 @@ function SidebarContent({
 
             <DropdownMenuSeparator />
 
+            {/* Theme Toggle */}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="flex items-center gap-2">
+                {theme === 'dark' ? (
+                  <Moon className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                ) : theme === 'light' ? (
+                  <Sun className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                ) : (
+                  <Monitor className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                )}
+                <span>Theme</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="w-40">
+                <DropdownMenuLabel>Select Theme</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                  <Sun className="w-4 h-4 mr-2" />
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                  <Moon className="w-4 h-4 mr-2" />
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>
+                  <Monitor className="w-4 h-4 mr-2" />
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+
             {/* Language Picker */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="flex items-center gap-2">
-                <Languages className="w-4 h-4 text-black dark:text-white" />
+                <Languages className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
                 <span>Language</span>
               </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="w-48">
+              <DropdownMenuSubContent 
+                className="w-48"
+                avoidCollisions={true}
+                collisionPadding={8}
+              >
                 <DropdownMenuLabel>Select Language</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
@@ -865,15 +903,6 @@ function SidebarContent({
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
-
-            {/* Accessibility */}
-            <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={handleAccessibilityOpen}
-            >
-              <Accessibility className="w-4 h-4 text-black dark:text-white" />
-              <span>Accessibility</span>
-            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 
@@ -974,7 +1003,7 @@ function MobileSidebar() {
           side="left"
           className={cn(
             "p-0 w-72 border-none",
-            "bg-white/95 dark:bg-black/10 backdrop-blur-xl",
+            "bg-white/95 dark:bg-black/95 backdrop-blur-xl",
             "shadow-2xl"
           )}
         >
