@@ -687,7 +687,7 @@ export interface Notification {
     userId: string;
     title: string;
     message: string;
-    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message' | 'staffing' | 'chatbot' | 'telemedicine';
+    type: 'appointment' | 'prescription' | 'bill' | 'result' | 'system' | 'message' | 'staffing' | 'chatbot' | 'telemedicine' | 'umid_access' | 'umid_expired' | 'umid_security_alert' | 'umid_verification_failed' | 'medication_reminder' | 'medication_missed' | 'medication_adherence_alert' | 'health_inquiry_response' | 'report_analysis_complete' | 'emergency_detected' | 'review_required' | 'prescription_analyzed' | 'interaction_warning' | 'stock_alert' | 'consultation_required';
     relatedEntityId?: string;
     isRead: boolean;
     createdAt: Date;
@@ -750,6 +750,45 @@ export interface TelemedicineNotification extends Notification {
     issue: 'technical_support_needed' | 'session_ready' | 'waiting_room_full' | 'equipment_check';
     platform?: string;
     urgency: 'low' | 'medium' | 'high' | 'critical';
+}
+
+// -----------------------------------------------------------------------------
+// Enhanced Notification types for new features
+// -----------------------------------------------------------------------------
+
+export interface UMIDNotification extends Notification {
+    type: 'umid_access' | 'umid_expired' | 'umid_security_alert' | 'umid_verification_failed';
+    umidId: string;
+    staffId?: string;
+    securityLevel: 'low' | 'medium' | 'high' | 'critical';
+    accessDetails?: UMIDAccessLog;
+}
+
+export interface MedicationReminderNotification extends Notification {
+    type: 'medication_reminder' | 'medication_missed' | 'medication_adherence_alert';
+    scheduleId: string;
+    medicationName: string;
+    dosage: string;
+    scheduledTime: Date;
+    snoozeCount: number;
+    adherencePercentage: number;
+}
+
+export interface HealthAssistantNotification extends Notification {
+    type: 'health_inquiry_response' | 'report_analysis_complete' | 'emergency_detected' | 'review_required';
+    inquiryId: string;
+    urgencyLevel: 'low' | 'medium' | 'high' | 'emergency';
+    requiresPhysician: boolean;
+    emergencyFlags?: EmergencyFlag[];
+}
+
+export interface PrescriptionAnalyzerNotification extends Notification {
+    type: 'prescription_analyzed' | 'interaction_warning' | 'stock_alert' | 'consultation_required';
+    prescriptionId: string;
+    analysisId: string;
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    interactionCount: number;
+    requiresAction: boolean;
 }
 
 // -----------------------------------------------------------------------------
@@ -951,227 +990,867 @@ export interface StaffManagementQueryParams extends QueryParams {
 }
 
 // -----------------------------------------------------------------------------
-// Chatbot related types
+// Universal Medical ID (UMID) related types
 // -----------------------------------------------------------------------------
 
-export interface ChatbotConfiguration {
+export interface UniversalMedicalID {
+    id: string;
+    patientId: string;
+    umidNumber: string; // Unique UMID identifier
+    qrCodeData: string; // Encrypted QR code data
+    secretKey: string; // Shared secret for TOTP generation (encrypted)
+    isActive: boolean;
+    issueDate: Date;
+    lastAccessDate?: Date;
+    accessHistory: UMIDAccessLog[];
+    totpSettings: TOTPSettings;
+    securitySettings: UMIDSecuritySettings;
+    linkedMedicalData: LinkedMedicalData;
+}
+
+export interface TOTPSettings {
+    digits: 6 | 8; // TOTP code length
+    period: 30 | 60; // Refresh interval in seconds
+    algorithm: 'SHA1' | 'SHA256' | 'SHA512';
+    issuer: string; // Usually "HealthSphere"
+    label: string; // Patient identifier
+}
+
+export interface UMIDSecuritySettings {
+    maxFailedAttempts: number;
+    lockoutDuration: number; // in minutes
+    requireBiometric: boolean;
+    allowOfflineAccess: boolean;
+    encryptionLevel: 'standard' | 'high' | 'military';
+    accessControlLevel: 'basic' | 'enhanced' | 'strict';
+}
+
+export interface LinkedMedicalData {
+    basicInfo: {
+        name: string;
+        dateOfBirth: Date;
+        bloodType?: BloodType;
+        emergencyContact: EmergencyContact;
+    };
+    criticalAllergies: string[];
+    chronicConditions: string[];
+    currentMedications: string[];
+    emergencyMedicalInfo: string[];
+    dnrStatus?: boolean; // Do Not Resuscitate
+    organDonorStatus?: boolean;
+    medicalAlerts: MedicalAlert[];
+}
+
+export interface MedicalAlert {
+    type: 'allergy' | 'condition' | 'medication' | 'warning' | 'emergency';
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    description: string;
+    dateAdded: Date;
+    expiryDate?: Date;
+    addedBy: string; // Healthcare provider ID
+}
+
+export interface UMIDAccessLog {
+    id: string;
+    accessedBy: string; // Staff member ID
+    staffRole: UserRole;
+    accessTime: Date;
+    accessType: 'scan' | 'manual_entry' | 'emergency_override';
+    location?: string; // Department or facility
+    purpose: string;
+    dataAccessed: string[]; // What information was viewed
+    deviceInfo?: DeviceInfo;
+    ipAddress?: string;
+    wasSuccessful: boolean;
+    failureReason?: string;
+}
+
+export interface DeviceInfo {
+    deviceId: string;
+    deviceType: 'mobile' | 'tablet' | 'desktop' | 'scanner';
+    browserInfo?: string;
+    osInfo?: string;
+    appVersion?: string;
+}
+
+export interface UMIDAuthenticationRequest {
+    totpCode: string;
+    umidNumber: string;
+    staffId: string;
+    deviceInfo: DeviceInfo;
+    accessPurpose: string;
+    emergencyOverride?: boolean;
+}
+
+export interface UMIDAuthenticationResponse {
+    success: boolean;
+    accessToken?: string;
+    medicalData?: LinkedMedicalData;
+    accessLevel: 'basic' | 'full' | 'emergency';
+    expiresAt: Date;
+    errorMessage?: string;
+    remainingAttempts?: number;
+}
+
+// -----------------------------------------------------------------------------
+// AI Assistant and Health Inquiry related types
+// -----------------------------------------------------------------------------
+
+export interface HealthInquiryAssistant {
     id: string;
     name: string;
-    description?: string;
-    isActive: boolean;
     version: string;
-    lastUpdated: Date;
-    updatedBy: string; // User ID
-    settings: ChatbotSettings;
-    knowledgeBase: ChatbotKnowledgeBase[];
-    responses: ChatbotResponse[];
-    analytics: ChatbotAnalytics;
-    permissions: ChatbotPermission[];
+    isActive: boolean;
+    settings: AIAssistantSettings;
+    knowledgeBase: MedicalKnowledgeBase[];
+    specializations: MedicalSpecialization[];
+    supportedLanguages: string[];
+    analytics: AIAssistantAnalytics;
+    reportAnalysis: ReportAnalysisCapability;
 }
 
-export interface ChatbotSettings {
-    language: string;
-    responseTime: number; // in milliseconds
-    fallbackEnabled: boolean;
-    escalationEnabled: boolean;
-    learningEnabled: boolean;
-    contextRetention: number; // in minutes
-    maxConversationLength: number;
+export interface AIAssistantSettings {
     confidenceThreshold: number; // 0-1
+    responseStyle: 'professional' | 'friendly' | 'technical';
+    disclaimerRequired: boolean;
+    emergencyDetection: boolean;
+    symptomChecker: boolean;
+    medicationInteractionCheck: boolean;
+    reportAnalysisEnabled: boolean;
+    maxReportSize: number; // in MB
+    supportedReportFormats: string[]; // ['PDF', 'JPEG', 'PNG', 'DICOM']
 }
 
-export interface ChatbotKnowledgeBase {
+export interface MedicalKnowledgeBase {
     id: string;
-    category: 'medical' | 'appointment' | 'medication' | 'faq' | 'nursing' | 'policy';
+    category: 'symptoms' | 'conditions' | 'treatments' | 'medications' | 'procedures' | 'lab_values' | 'imaging';
     topic: string;
     content: string;
-    keywords: string[];
+    medicalCodes: MedicalCode[];
     lastUpdated: Date;
-    updatedBy: string; // User ID
-    isActive: boolean;
-    priority: 'low' | 'medium' | 'high';
-    tags: string[];
+    reviewedBy: string; // Medical professional ID
+    evidenceLevel: 'A' | 'B' | 'C' | 'D'; // Evidence-based medicine levels
+    sources: string[];
 }
 
-export interface ChatbotResponse {
+export interface MedicalCode {
+    system: 'ICD-10' | 'CPT' | 'SNOMED' | 'LOINC' | 'RxNorm';
+    code: string;
+    description: string;
+}
+
+export interface MedicalSpecialization {
+    specialty: string;
+    subSpecialties: string[];
+    commonConditions: string[];
+    typicalProcedures: string[];
+    requiredExpertise: string[];
+}
+
+export interface ReportAnalysisCapability {
+    supportedTypes: ReportType[];
+    ocrEnabled: boolean;
+    imageAnalysis: boolean;
+    structuredDataExtraction: boolean;
+    abnormalityDetection: boolean;
+    comparisonWithNormals: boolean;
+}
+
+export type ReportType = 'blood_test' | 'urine_test' | 'x_ray' | 'ct_scan' | 'mri' | 'ultrasound' | 'ecg' | 'pathology' | 'other';
+
+export interface HealthInquiry {
     id: string;
-    intent: string;
-    response: string;
-    alternatives?: string[];
-    followUpQuestions?: string[];
-    escalationTriggers?: string[];
-    mediaAttachments?: string[];
-    lastUpdated: Date;
-    updatedBy: string; // User ID
-    usageCount: number;
-    successRate: number; // 0-1
+    userId: string;
+    userRole: UserRole;
+    inquiryType: 'symptom_check' | 'medication_info' | 'report_analysis' | 'general_health' | 'emergency';
+    query: string;
+    attachedReports?: UploadedReport[];
+    aiResponse: AIHealthResponse;
+    humanReviewRequired: boolean;
+    reviewedBy?: string; // Medical professional ID
+    reviewNotes?: string;
+    timestamp: Date;
+    followUpRecommended: boolean;
+    urgencyLevel: 'low' | 'medium' | 'high' | 'emergency';
 }
 
-export interface ChatbotAnalytics {
-    totalInteractions: number;
-    successfulResolutions: number;
-    escalatedConversations: number;
-    userSatisfactionRating: number; // 1-5
-    topQueries: ChatbotQueryAnalytics[];
-    responseTimeMetrics: {
+export interface UploadedReport {
+    id: string;
+    fileName: string;
+    fileType: string;
+    fileSize: number;
+    uploadedAt: Date;
+    processedAt?: Date;
+    extractedData?: ExtractedReportData;
+    analysisResults?: ReportAnalysisResult[];
+}
+
+export interface ExtractedReportData {
+    reportType: ReportType;
+    testDate?: Date;
+    laboratoryName?: string;
+    physicianName?: string;
+    testResults: TestResult[];
+    observations: string[];
+    recommendations: string[];
+    criticalValues: CriticalValue[];
+}
+
+export interface TestResult {
+    testName: string;
+    value: string;
+    unit?: string;
+    normalRange?: string;
+    isAbnormal: boolean;
+    severity?: 'mild' | 'moderate' | 'severe';
+    medicalCode?: MedicalCode;
+}
+
+export interface CriticalValue {
+    testName: string;
+    value: string;
+    criticalThreshold: string;
+    immediateAction: string;
+    notificationSent: boolean;
+}
+
+export interface ReportAnalysisResult {
+    finding: string;
+    confidence: number; // 0-1
+    category: 'normal' | 'abnormal' | 'critical' | 'unclear';
+    explanation: string;
+    recommendations: string[];
+    requiresPhysician: boolean;
+}
+
+export interface AIHealthResponse {
+    response: string;
+    confidence: number; // 0-1
+    sources: string[];
+    disclaimers: string[];
+    recommendations: HealthRecommendation[];
+    emergencyFlags: EmergencyFlag[];
+    followUpSuggestions: string[];
+    reportSummary?: ReportSummary;
+}
+
+export interface HealthRecommendation {
+    type: 'lifestyle' | 'medical' | 'immediate_care' | 'follow_up' | 'medication';
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    description: string;
+    timeframe?: string;
+    additionalInfo?: string;
+}
+
+export interface EmergencyFlag {
+    type: 'symptom' | 'vital_sign' | 'medication' | 'condition';
+    severity: 'moderate' | 'high' | 'critical';
+    description: string;
+    immediateAction: string;
+    contactInfo?: string;
+}
+
+export interface ReportSummary {
+    overallAssessment: 'normal' | 'abnormal' | 'critical' | 'requires_review';
+    keyFindings: string[];
+    abnormalValues: TestResult[];
+    criticalValues: CriticalValue[];
+    trendAnalysis?: TrendAnalysis[];
+    comparisonWithPrevious?: ReportComparison[];
+}
+
+export interface TrendAnalysis {
+    testName: string;
+    trend: 'improving' | 'stable' | 'worsening' | 'fluctuating';
+    timespan: string;
+    significance: 'not_significant' | 'mild' | 'moderate' | 'significant';
+}
+
+export interface ReportComparison {
+    testName: string;
+    currentValue: string;
+    previousValue: string;
+    changePercentage: number;
+    significance: 'improvement' | 'no_change' | 'deterioration';
+}
+
+export interface AIAssistantAnalytics {
+    totalInquiries: number;
+    accuracyRate: number; // Based on medical professional reviews
+    responseTime: {
         average: number;
         fastest: number;
         slowest: number;
     };
-    usageByRole: {
-        role: UserRole;
-        interactionCount: number;
-        satisfactionRating: number;
+    inquiryBreakdown: {
+        type: string;
+        count: number;
+        accuracyRate: number;
     }[];
-    period: {
-        startDate: Date;
-        endDate: Date;
-    };
+    emergencyDetections: number;
+    humanReviewsRequired: number;
+    userSatisfactionRating: number; // 1-5
+    reportAnalysisStats: ReportAnalysisStats;
 }
 
-export interface ChatbotQueryAnalytics {
-    query: string;
-    frequency: number;
-    successRate: number;
-    averageResolutionTime: number;
-    userRoles: UserRole[];
-}
-
-export interface ChatbotPermission {
-    role: UserRole;
-    canView: boolean;
-    canEdit: boolean;
-    canManageKnowledgeBase: boolean;
-    canViewAnalytics: boolean;
-    canManageResponses: boolean;
-    categories: string[]; // Categories they can manage
-}
-
-export interface ChatbotConversation {
-    id: string;
-    userId: string;
-    userRole: UserRole;
-    startTime: Date;
-    endTime?: Date;
-    messages: ChatbotMessage[];
-    wasEscalated: boolean;
-    escalatedTo?: string; // User ID
-    satisfactionRating?: number; // 1-5
-    resolvedSuccessfully: boolean;
-    category: string;
-    intent: string;
-}
-
-export interface ChatbotMessage {
-    id: string;
-    type: 'user' | 'bot';
-    content: string;
-    timestamp: Date;
-    intent?: string;
-    confidence?: number;
-    attachments?: string[];
-    metadata?: Record<string, any>;
+export interface ReportAnalysisStats {
+    totalReportsAnalyzed: number;
+    reportTypeBreakdown: {
+        type: ReportType;
+        count: number;
+        accuracyRate: number;
+    }[];
+    criticalFindingsDetected: number;
+    averageProcessingTime: number; // in seconds
+    ocrAccuracyRate: number;
 }
 
 // -----------------------------------------------------------------------------
-// Telemedicine related types
+// Prescription Analyzer related types
 // -----------------------------------------------------------------------------
 
-export interface TelemedicineSession {
+export interface PrescriptionAnalyzer {
     id: string;
-    appointmentId: string;
+    pharmacyId: string;
+    pharmacistId: string;
+    version: string;
+    isActive: boolean;
+    settings: PrescriptionAnalyzerSettings;
+    inventoryConnection: PharmacyInventoryConnection;
+    analytics: PrescriptionAnalyzerAnalytics;
+}
+
+export interface PrescriptionAnalyzerSettings {
+    autoInventoryCheck: boolean;
+    interactionWarnings: boolean;
+    dosageValidation: boolean;
+    allergyChecking: boolean;
+    priceComparison: boolean;
+    genericSubstitution: boolean;
+    stockAlerts: boolean;
+    expirationWarnings: boolean;
+    insuranceVerification: boolean;
+}
+
+export interface PharmacyInventoryConnection {
+    pharmacyId: string;
+    pharmacyName: string;
+    connectionStatus: 'connected' | 'disconnected' | 'error';
+    lastSyncTime: Date;
+    syncInterval: number; // in minutes
+    inventorySystem: 'internal' | 'external_api' | 'manual';
+    apiEndpoint?: string;
+    credentials?: EncryptedCredentials;
+}
+
+export interface EncryptedCredentials {
+    encryptedData: string;
+    keyId: string;
+    algorithm: string;
+}
+
+export interface PrescriptionAnalysis {
+    id: string;
+    prescriptionId: string;
     patientId: string;
-    doctorId: string;
-    nurseId?: string; // For telemedicine support
-    startTime: Date;
-    endTime?: Date;
-    status: 'scheduled' | 'waiting' | 'in_progress' | 'completed' | 'cancelled' | 'technical_issues';
-    platform: 'zoom' | 'google_meet' | 'microsoft_teams' | 'custom';
-    meetingDetails: VirtualMeetingInfo;
-    technicalSupport?: TelemedicineTechnicalSupport;
-    sessionNotes?: string;
-    prescriptionsIssued?: string[]; // Prescription IDs
-    followUpRequired?: boolean;
-    recordingEnabled?: boolean;
-    recordingUrl?: string;
+    pharmacistId: string;
+    analysisTime: Date;
+    status: 'pending' | 'analyzed' | 'dispensed' | 'rejected' | 'requires_consultation';
+    availabilityCheck: MedicationAvailability[];
+    interactionWarnings: DrugInteraction[];
+    allergyWarnings: AllergyWarning[];
+    dosageValidation: DosageValidation[];
+    alternatives: MedicationAlternative[];
+    costAnalysis: CostAnalysis;
+    recommendations: PharmacistRecommendation[];
+    patientConsultationRequired: boolean;
+    physicianContactRequired: boolean;
 }
 
-export interface TelemedicineTechnicalSupport {
-    supportStaffId: string;
-    issuesReported: TechnicalIssue[];
-    resolutionTime?: number; // in minutes
-    satisfactionRating?: number; // 1-5
+export interface MedicationAvailability {
+    medicationId: string;
+    medicationName: string;
+    brandName: string;
+    genericName: string;
+    strength: string;
+    formulation: string;
+    inStock: boolean;
+    quantity: number;
+    unit: string;
+    expirationDate?: Date;
+    batchNumber?: string;
+    cost: number;
+    supplierInfo?: SupplierInfo;
+    estimatedRestockDate?: Date;
+    alternativeLocations?: PharmacyLocation[];
 }
 
-export interface TechnicalIssue {
-    type: 'audio' | 'video' | 'connection' | 'platform' | 'other';
+export interface SupplierInfo {
+    supplierId: string;
+    supplierName: string;
+    contactInfo: string;
+    deliveryTime: number; // in days
+    minimumOrderQuantity: number;
+}
+
+export interface PharmacyLocation {
+    pharmacyId: string;
+    pharmacyName: string;
+    address: Address;
+    phone: string;
+    distance: number; // in km
+    inStock: boolean;
+    quantity: number;
+    cost: number;
+}
+
+export interface DrugInteraction {
+    type: 'drug_drug' | 'drug_food' | 'drug_condition' | 'drug_lab';
+    severity: 'minor' | 'moderate' | 'major' | 'contraindicated';
+    interactingMedications: string[];
+    interactingSubstances?: string[];
     description: string;
-    timestamp: Date;
-    resolved: boolean;
-    resolutionTime?: number; // in minutes
+    mechanism: string;
+    clinicalSignificance: string;
+    management: string;
+    references: string[];
+    requiresPhysicianConsult: boolean;
 }
 
-export interface VirtualWaitingRoom {
-    id: string;
-    doctorId: string;
-    currentPatients: VirtualWaitingPatient[];
-    maxCapacity: number;
-    averageWaitTime: number; // in minutes
-    status: 'open' | 'closed' | 'full';
-    settings: VirtualWaitingRoomSettings;
+export interface AllergyWarning {
+    allergen: string;
+    allergyType: 'drug' | 'ingredient' | 'cross_reactivity';
+    severity: 'mild' | 'moderate' | 'severe' | 'anaphylaxis';
+    reaction: string;
+    lastReactionDate?: Date;
+    avoidanceRequired: boolean;
+    alternativesAvailable: boolean;
+    emergencyProtocol?: string;
 }
 
-export interface VirtualWaitingPatient {
-    patientId: string;
-    appointmentId: string;
-    joinTime: Date;
-    estimatedWaitTime: number; // in minutes
-    position: number;
-    status: 'waiting' | 'called' | 'in_session' | 'left';
-    technicalCheckCompleted: boolean;
-    checkInCompleted: boolean;
+export interface DosageValidation {
+    medicationName: string;
+    prescribedDose: string;
+    recommendedDose: string;
+    frequency: string;
+    duration: string;
+    isAppropriate: boolean;
+    concerns: DosageConcern[];
+    adjustmentRecommendations?: DosageAdjustment[];
 }
 
-export interface VirtualWaitingRoomSettings {
-    enableTechnicalCheck: boolean;
-    enablePreAppointmentForms: boolean;
-    enableChatSupport: boolean;
-    enableEstimatedWaitTime: boolean;
-    enableQueuePosition: boolean;
-    allowRescheduling: boolean;
-    maxWaitTime: number; // in minutes
+export interface DosageConcern {
+    type: 'overdose' | 'underdose' | 'frequency' | 'duration' | 'route';
+    severity: 'low' | 'medium' | 'high';
+    description: string;
+    potentialEffects: string[];
+    recommendation: string;
 }
 
-export interface TelemedicineAnalytics {
-    totalSessions: number;
-    completedSessions: number;
-    cancelledSessions: number;
-    technicalIssueRate: number; // percentage
-    averageSessionDuration: number; // in minutes
-    patientSatisfactionRating: number; // 1-5
-    doctorSatisfactionRating: number; // 1-5
-    platformUsage: {
-        platform: string;
-        usage: number;
-        satisfactionRating: number;
-    }[];
+export interface DosageAdjustment {
+    reason: string;
+    recommendedDose: string;
+    recommendedFrequency: string;
+    duration?: string;
+    specialInstructions: string;
+    monitoringRequired: boolean;
+}
+
+export interface MedicationAlternative {
+    type: 'generic' | 'therapeutic' | 'brand' | 'formulation';
+    medicationName: string;
+    reason: 'cost' | 'availability' | 'interaction' | 'allergy' | 'preference';
+    costSaving: number;
+    availability: 'in_stock' | 'available' | 'special_order';
+    therapeuticEquivalence: boolean;
+    bioequivalence: boolean;
+    patientEducationRequired: boolean;
+    physicianApprovalRequired: boolean;
+}
+
+export interface CostAnalysis {
+    originalCost: number;
+    insuranceCoverage: number;
+    patientCost: number;
+    genericSavings?: number;
+    alternativeCosts: AlternativeCost[];
+    insuranceStatus: 'covered' | 'partially_covered' | 'not_covered' | 'prior_auth_required';
+    copayAmount?: number;
+    deductibleApplied?: number;
+}
+
+export interface AlternativeCost {
+    medicationName: string;
+    totalCost: number;
+    insuranceCoverage: number;
+    patientCost: number;
+    savings: number;
+    savingsPercentage: number;
+}
+
+export interface PharmacistRecommendation {
+    type: 'substitution' | 'counseling' | 'monitoring' | 'consultation' | 'education';
+    priority: 'low' | 'medium' | 'high' | 'urgent';
+    description: string;
+    actionRequired: string;
+    timeframe: string;
+    followUpRequired: boolean;
+    documentation: string;
+}
+
+export interface PrescriptionAnalyzerAnalytics {
+    totalAnalyses: number;
+    averageAnalysisTime: number; // in seconds
+    interactionsCaught: number;
+    costSavingsGenerated: number;
+    substitutionsRecommended: number;
+    patientConsultations: number;
+    accuracyRate: number; // Based on pharmacist feedback
+    inventoryOptimization: InventoryOptimizationMetrics;
     period: {
         startDate: Date;
         endDate: Date;
     };
-    departmentBreakdown: {
-        departmentId: string;
-        sessionsCount: number;
-        successRate: number;
-    }[];
 }
 
-export interface ElectronicPrescription extends Prescription {
-    telemedicineSessionId: string;
-    digitalSignature: string;
-    verificationCode: string;
-    deliveryMethod: 'pharmacy_pickup' | 'mail_delivery' | 'digital_only';
-    pharmacyInstructions?: string;
-    patientConsent: boolean;
-    prescribedVirtually: boolean;
+export interface InventoryOptimizationMetrics {
+    stockOutsPrevented: number;
+    overStockReduced: number;
+    expirationWastePrevented: number;
+    costOptimization: number;
+    supplierPerformance: SupplierPerformanceMetric[];
+}
+
+export interface SupplierPerformanceMetric {
+    supplierId: string;
+    onTimeDelivery: number; // percentage
+    qualityRating: number; // 1-5
+    costCompetitiveness: number; // percentage
+    orderAccuracy: number; // percentage
+}
+
+// -----------------------------------------------------------------------------
+// Medication Scheduling and Reminder System
+// -----------------------------------------------------------------------------
+
+export interface MedicationSchedule {
+    id: string;
+    patientId: string;
+    prescriptionId?: string; // For doctor-prescribed medications
+    medicationName: string;
+    brandName?: string;
+    genericName?: string;
+    strength: string;
+    formulation: 'tablet' | 'capsule' | 'liquid' | 'injection' | 'topical' | 'inhaler' | 'drops' | 'patch';
+    dosage: MedicationDosage;
+    schedule: DosageSchedule;
+    duration: MedicationDuration;
+    instructions: MedicationInstructions;
+    reminders: MedicationReminder[];
+    adherence: MedicationAdherence;
+    isActive: boolean;
+    createdBy: 'patient' | 'doctor' | 'pharmacist';
+    createdAt: Date;
+    lastModified: Date;
+    modifiedBy: string; // User ID
+}
+
+export interface MedicationDosage {
+    amount: number;
+    unit: 'mg' | 'ml' | 'tablets' | 'capsules' | 'drops' | 'puffs' | 'patches';
+    route: 'oral' | 'topical' | 'injection' | 'inhalation' | 'sublingual' | 'rectal';
+    specialInstructions?: string;
+}
+
+export interface DosageSchedule {
+    frequency: MedicationFrequency;
+    times: MedicationTime[];
+    daysOfWeek?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
+    intervalDays?: number; // For every X days
+    cyclical?: CyclicalSchedule;
+}
+
+export type MedicationFrequency = 
+    | 'once_daily' 
+    | 'twice_daily' 
+    | 'three_times_daily' 
+    | 'four_times_daily' 
+    | 'every_x_hours' 
+    | 'as_needed' 
+    | 'weekly' 
+    | 'monthly' 
+    | 'custom';
+
+export interface MedicationTime {
+    time: string; // HH:MM format
+    label?: string; // e.g., "Morning", "With breakfast", "Before bed"
+    mealRelation?: 'before_meal' | 'with_meal' | 'after_meal' | 'empty_stomach';
+    offsetMinutes?: number; // Minutes before/after meal
+}
+
+export interface CyclicalSchedule {
+    onDays: number; // Take for X days
+    offDays: number; // Skip for X days
+    cycleRepeat: number; // How many cycles
+    currentCycle: number;
+    currentPhase: 'on' | 'off';
+}
+
+export interface MedicationDuration {
+    type: 'indefinite' | 'until_date' | 'for_days' | 'until_finished';
+    endDate?: Date;
+    totalDays?: number;
+    totalQuantity?: number;
+    quantityRemaining?: number;
+}
+
+export interface MedicationInstructions {
+    generalInstructions: string;
+    specialInstructions?: string[];
+    warnings?: string[];
+    sideEffectsToWatch?: string[];
+    foodInteractions?: string[];
+    drugInteractions?: string[];
+    storageInstructions?: string;
+    missedDoseInstructions?: string;
+}
+
+export interface MedicationReminder {
+    id: string;
+    scheduleId: string;
+    reminderType: 'push_notification' | 'sms' | 'email' | 'phone_call';
+    scheduledTime: Date;
+    actualTime?: Date;
+    status: 'pending' | 'sent' | 'delivered' | 'failed' | 'dismissed' | 'snoozed';
+    reminderText: string;
+    isRecurring: boolean;
+    snoozeCount: number;
+    maxSnoozeCount: number;
+    snoozeDuration: number; // in minutes
+    urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
+    deviceTokens?: string[]; // For push notifications
+    deliveryAttempts: ReminderDeliveryAttempt[];
+}
+
+export interface ReminderDeliveryAttempt {
+    attemptTime: Date;
+    method: 'push_notification' | 'sms' | 'email' | 'phone_call';
+    success: boolean;
+    errorMessage?: string;
+    deliveryTime?: Date;
+    readTime?: Date;
+    responseTime?: Date;
+}
+
+export interface MedicationAdherence {
+    totalDoses: number;
+    takenDoses: number;
+    missedDoses: number;
+    lateCount: number;
+    adherencePercentage: number;
+    adherenceHistory: AdherenceRecord[];
+    adherenceGoal: number; // Target percentage
+    streakDays: number; // Current streak of adherence
+    longestStreak: number;
+    lastMissedDate?: Date;
+    improvementTrend: 'improving' | 'stable' | 'declining';
+}
+
+export interface AdherenceRecord {
+    date: Date;
+    scheduledTime: string;
+    actualTime?: Date;
+    status: 'taken' | 'missed' | 'late' | 'skipped';
+    notes?: string;
+    sideEffects?: string[];
+    effectiveness?: number; // 1-5 scale
+    mood?: 'very_poor' | 'poor' | 'neutral' | 'good' | 'very_good';
+}
+
+export interface MedicationReminderSettings {
+    userId: string;
+    enabled: boolean;
+    preferredMethods: ('push_notification' | 'sms' | 'email')[];
+    reminderAdvanceTime: number; // minutes before scheduled time
+    maxSnoozeCount: number;
+    snoozeDuration: number; // in minutes
+    quietHours: {
+        start: string; // HH:MM
+        end: string; // HH:MM
+    };
+    weekendSettings: {
+        enabled: boolean;
+        differentTiming: boolean;
+        weekendOffset: number; // minutes to adjust timing
+    };
+    emergencyContact?: EmergencyMedicationContact;
+    adherenceReports: {
+        enabled: boolean;
+        frequency: 'daily' | 'weekly' | 'monthly';
+        recipients: string[]; // Email addresses
+    };
+}
+
+export interface EmergencyMedicationContact {
+    name: string;
+    relationship: string;
+    phone: string;
+    email?: string;
+    alertThreshold: number; // consecutive missed doses
+    alertMethods: ('sms' | 'email' | 'phone_call')[];
+}
+
+export interface MedicationScheduleAnalytics {
+    patientId: string;
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+    overallAdherence: number;
+    medicationBreakdown: MedicationAdherenceBreakdown[];
+    reminderEffectiveness: ReminderEffectivenessMetrics;
+    improvementAreas: ImprovementArea[];
+    achievements: AdherenceAchievement[];
+    healthOutcomes: HealthOutcomeCorrelation[];
+}
+
+export interface MedicationAdherenceBreakdown {
+    medicationName: string;
+    adherenceRate: number;
+    totalDoses: number;
+    missedDoses: number;
+    commonMissedTimes: string[];
+    sideEffectsReported: number;
+    effectivenessRating: number;
+}
+
+export interface ReminderEffectivenessMetrics {
+    totalReminders: number;
+    successfulReminders: number;
+    dismissedReminders: number;
+    snoozedReminders: number;
+    averageResponseTime: number; // in minutes
+    preferredReminderMethod: string;
+    optimalReminderTiming: string[];
+}
+
+export interface ImprovementArea {
+    category: 'timing' | 'method' | 'frequency' | 'medication_specific';
+    description: string;
+    currentPerformance: number;
+    targetPerformance: number;
+    recommendations: string[];
+    priority: 'low' | 'medium' | 'high';
+}
+
+export interface AdherenceAchievement {
+    type: 'streak' | 'improvement' | 'consistency' | 'milestone';
+    title: string;
+    description: string;
+    achievedDate: Date;
+    value: number;
+    badge?: string;
+}
+
+export interface HealthOutcomeCorrelation {
+    outcome: 'blood_pressure' | 'blood_sugar' | 'symptom_severity' | 'quality_of_life' | 'lab_values';
+    correlationStrength: number; // -1 to 1
+    trendDirection: 'improving' | 'stable' | 'declining';
+    confidenceLevel: number; // 0-1
+    dataPoints: number;
+    notes: string;
+}
+
+// -----------------------------------------------------------------------------
+// System Integration types
+// -----------------------------------------------------------------------------
+
+export interface SystemIntegration {
+    id: string;
+    name: string;
+    type: 'umid' | 'health_assistant' | 'prescription_analyzer' | 'medication_scheduler';
+    version: string;
+    status: 'active' | 'inactive' | 'maintenance' | 'error';
+    lastHealthCheck: Date;
+    configuration: IntegrationConfiguration;
+    metrics: IntegrationMetrics;
+    dependencies: SystemDependency[];
+}
+
+export interface IntegrationConfiguration {
+    apiEndpoints: string[];
+    authentication: AuthenticationConfig;
+    rateLimits: RateLimitConfig;
+    caching: CachingConfig;
+    monitoring: MonitoringConfig;
+    security: SecurityConfig;
+}
+
+export interface AuthenticationConfig {
+    method: 'api_key' | 'oauth2' | 'jwt' | 'certificate';
+    credentials: EncryptedCredentials;
+    tokenExpiration: number; // in minutes
+    refreshEnabled: boolean;
+}
+
+export interface RateLimitConfig {
+    requestsPerMinute: number;
+    requestsPerHour: number;
+    requestsPerDay: number;
+    burstLimit: number;
+}
+
+export interface CachingConfig {
+    enabled: boolean;
+    ttl: number; // in seconds
+    strategy: 'lru' | 'fifo' | 'ttl';
+    maxSize: number; // in MB
+}
+
+export interface MonitoringConfig {
+    enabled: boolean;
+    alertThresholds: AlertThreshold[];
+    healthCheckInterval: number; // in minutes
+    performanceMetrics: boolean;
+    errorTracking: boolean;
+}
+
+export interface AlertThreshold {
+    metric: string;
+    operator: '>' | '<' | '=' | '!=' | '>=' | '<=';
+    value: number;
+    severity: 'info' | 'warning' | 'error' | 'critical';
+}
+
+export interface SecurityConfig {
+    encryptionLevel: 'standard' | 'high' | 'military';
+    dataClassification: 'public' | 'internal' | 'confidential' | 'restricted';
+    accessLogging: boolean;
+    auditTrail: boolean;
+    ipWhitelist?: string[];
+    rateLimiting: boolean;
+}
+
+export interface IntegrationMetrics {
+    uptime: number; // percentage
+    responseTime: {
+        average: number;
+        p95: number;
+        p99: number;
+    };
+    errorRate: number; // percentage
+    throughput: number; // requests per second
+    lastErrorTime?: Date;
+    totalRequests: number;
+    totalErrors: number;
+}
+
+export interface SystemDependency {
+    name: string;
+    type: 'database' | 'api' | 'service' | 'external';
+    version: string;
+    status: 'healthy' | 'degraded' | 'down';
+    lastChecked: Date;
+    endpoint?: string;
+    criticality: 'low' | 'medium' | 'high' | 'critical';
 }
