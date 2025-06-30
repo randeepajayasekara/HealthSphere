@@ -73,6 +73,114 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     localStorage.setItem('accessibility-settings', JSON.stringify(settings));
   }, [settings]);
 
+  // Apply accessibility styles to document body
+  useEffect(() => {
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Remove all accessibility classes first
+    const accessibilityClasses = [
+      'accessibility-bigger-text',
+      'accessibility-text-spacing',
+      'accessibility-hide-images',
+      'accessibility-dyslexia-friendly',
+      'accessibility-cursor',
+      'accessibility-pause-animations',
+      'accessibility-contrast',
+      'accessibility-smart-contrast',
+      'accessibility-highlight-links',
+      'accessibility-oversized-widget'
+    ];
+
+    accessibilityClasses.forEach(className => {
+      body.classList.remove(className);
+      html.classList.remove(className);
+    });
+
+    // Apply active accessibility classes
+    if (settings.biggerText) {
+      body.classList.add('accessibility-bigger-text');
+    }
+
+    if (settings.textSpacing) {
+      body.classList.add('accessibility-text-spacing');
+    }
+
+    if (settings.hideImages) {
+      body.classList.add('accessibility-hide-images');
+    }
+
+    if (settings.dyslexiaFriendly) {
+      body.classList.add('accessibility-dyslexia-friendly');
+    }
+
+    if (settings.cursor) {
+      body.classList.add('accessibility-cursor');
+    }
+
+    if (settings.pauseAnimations) {
+      body.classList.add('accessibility-pause-animations');
+    }
+
+    if (settings.contrast) {
+      body.classList.add('accessibility-contrast');
+    }
+
+    if (settings.smartContrast) {
+      body.classList.add('accessibility-smart-contrast');
+    }
+
+    if (settings.highlightLinks) {
+      body.classList.add('accessibility-highlight-links');
+    }
+
+    if (settings.oversizedWidget) {
+      body.classList.add('accessibility-oversized-widget');
+    }
+
+    // Apply CSS custom properties for dynamic values
+    body.style.setProperty('--accessibility-line-height', settings.lineHeight.toString());
+    body.style.setProperty('--accessibility-text-align', settings.textAlign);
+
+    // Apply line height to all elements
+    body.style.setProperty('--line-height-override', settings.lineHeight.toString());
+    
+    // Apply text alignment
+    if (settings.textAlign !== 'left') {
+      body.setAttribute('data-text-align', settings.textAlign);
+    } else {
+      body.removeAttribute('data-text-align');
+    }
+
+    // Screen reader support
+    if (settings.screenReader) {
+      body.setAttribute('aria-live', 'polite');
+    } else {
+      body.removeAttribute('aria-live');
+    }
+
+    // Page structure visibility
+    if (settings.pageStructure) {
+      body.setAttribute('data-show-structure', 'true');
+    } else {
+      body.removeAttribute('data-show-structure');
+    }
+
+    return () => {
+      // Cleanup on unmount
+      accessibilityClasses.forEach(className => {
+        body.classList.remove(className);
+        html.classList.remove(className);
+      });
+      body.style.removeProperty('--accessibility-line-height');
+      body.style.removeProperty('--accessibility-text-align');
+      body.style.removeProperty('--line-height-override');
+      body.removeAttribute('data-text-align');
+      body.removeAttribute('aria-live');
+      body.removeAttribute('data-show-structure');
+    };
+  }, [settings]);
+
   const updateSetting = (key: keyof AccessibilitySettings, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
