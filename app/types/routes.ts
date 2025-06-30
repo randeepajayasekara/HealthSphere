@@ -141,6 +141,24 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     description: 'Communicate with your healthcare providers',
                     icon: 'message-square',
                 },
+                {
+                    path: '/dashboard/umid',
+                    name: 'Universal Medical ID',
+                    description: 'Access your Universal Medical ID and QR code',
+                    icon: 'qr-code',
+                },
+                {
+                    path: '/dashboard/medication-schedule',
+                    name: 'Medication Schedule',
+                    description: 'Manage your medication schedule and reminders',
+                    icon: 'alarm-clock',
+                },
+                {
+                    path: '/dashboard/health-assistant',
+                    name: 'Health Assistant',
+                    description: 'AI-powered health inquiry assistant',
+                    icon: 'bot',
+                },
             ],
         },
         {
@@ -210,6 +228,18 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     description: 'Communicate with patients and staff',
                     icon: 'message-square',
                 },
+                {
+                    path: '/doctor/umid-scanner',
+                    name: 'UMID Scanner',
+                    description: 'Scan and verify Universal Medical IDs',
+                    icon: 'scan',
+                },
+                {
+                    path: '/doctor/health-assistant',
+                    name: 'Health Assistant',
+                    description: 'AI-powered medical consultation assistant',
+                    icon: 'stethoscope',
+                },
             ],
         },
         {
@@ -274,6 +304,12 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     name: 'Messages',
                     description: 'Communicate with doctors and staff',
                     icon: 'message-square',
+                },
+                {
+                    path: '/nurse/umid-scanner',
+                    name: 'UMID Scanner',
+                    description: 'Scan and verify Universal Medical IDs',
+                    icon: 'scan',
                 },
             ],
         },
@@ -357,6 +393,18 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     name: 'Chatbot Statistics',
                     description: 'View chatbot usage analytics and performance metrics',
                     icon: 'activity',
+                },
+                {
+                    path: '/admin/umid-management',
+                    name: 'UMID Management',
+                    description: 'Manage Universal Medical ID system',
+                    icon: 'id-card',
+                },
+                {
+                    path: '/admin/health-assistant',
+                    name: 'Health Assistant Config',
+                    description: 'Configure AI Health Assistant system',
+                    icon: 'brain',
                 },
             ],
         },
@@ -485,6 +533,18 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
                     name: 'Messages',
                     description: 'Communicate with doctors and staff',
                     icon: 'message-square',
+                },
+                {
+                    path: '/pharmacist/prescription-analyzer',
+                    name: 'Prescription Analyzer',
+                    description: 'AI-powered prescription analysis and inventory management',
+                    icon: 'search',
+                },
+                {
+                    path: '/pharmacist/umid-scanner',
+                    name: 'UMID Scanner',
+                    description: 'Scan and verify Universal Medical IDs',
+                    icon: 'scan',
                 },
             ],
         },
@@ -651,4 +711,63 @@ export const hasRouteAccess = (route: Route, userRole: UserRole): boolean => {
     if (!route.protected) return true;
     if (!route.roles) return false;
     return route.roles.includes(userRole);
+};
+
+// API Routes for new features
+export const apiRoutes = {
+    // Universal Medical ID API routes
+    umid: {
+        base: '/api/umid',
+        generate: '/api/umid/generate', // POST - Generate new UMID
+        verify: '/api/umid/verify', // POST - Verify TOTP code
+        refresh: '/api/umid/refresh', // POST - Refresh QR code
+        access: '/api/umid/access', // POST - Log access attempt
+        history: '/api/umid/history', // GET - Get access history
+        deactivate: '/api/umid/deactivate', // POST - Deactivate UMID
+        settings: '/api/umid/settings', // GET/PUT - UMID settings
+    },
+
+    // Health Assistant API routes
+    healthAssistant: {
+        base: '/api/health-assistant',
+        inquiry: '/api/health-assistant/inquiry', // POST - Submit health inquiry
+        reportAnalysis: '/api/health-assistant/report-analysis', // POST - Upload and analyze report
+        history: '/api/health-assistant/history', // GET - Get inquiry history
+        feedback: '/api/health-assistant/feedback', // POST - Provide feedback
+        settings: '/api/health-assistant/settings', // GET/PUT - Assistant settings
+        knowledgeBase: '/api/health-assistant/knowledge-base', // GET/POST/PUT/DELETE - Manage knowledge base
+    },
+
+    // Prescription Analyzer API routes
+    prescriptionAnalyzer: {
+        base: '/api/prescription-analyzer',
+        analyze: '/api/prescription-analyzer/analyze', // POST - Analyze prescription
+        inventory: '/api/prescription-analyzer/inventory', // GET - Check inventory
+        alternatives: '/api/prescription-analyzer/alternatives', // GET - Get alternatives
+        interactions: '/api/prescription-analyzer/interactions', // POST - Check interactions
+        settings: '/api/prescription-analyzer/settings', // GET/PUT - Analyzer settings
+        analytics: '/api/prescription-analyzer/analytics', // GET - Get analytics
+    },
+
+    // Medication Scheduling API routes
+    medicationSchedule: {
+        base: '/api/medication-schedule',
+        schedules: '/api/medication-schedule/schedules', // GET/POST - Get/Create schedules  
+        schedule: '/api/medication-schedule/schedule/:id', // GET/PUT/DELETE - Manage specific schedule
+        reminders: '/api/medication-schedule/reminders', // GET/POST - Manage reminders
+        adherence: '/api/medication-schedule/adherence', // GET/POST - Track adherence
+        analytics: '/api/medication-schedule/analytics', // GET - Get adherence analytics
+        settings: '/api/medication-schedule/settings', // GET/PUT - Reminder settings
+        emergency: '/api/medication-schedule/emergency', // POST - Emergency notifications
+    },
+
+    // Telemedicine enhancements (existing but enhanced)
+    telemedicine: {
+        base: '/api/telemedicine',
+        sessions: '/api/telemedicine/sessions', // Enhanced with new features
+        prescription: '/api/telemedicine/prescription', // Electronic prescriptions
+        waitingRoom: '/api/telemedicine/waiting-room', // Virtual waiting room
+        support: '/api/telemedicine/support', // Technical support
+        analytics: '/api/telemedicine/analytics', // Enhanced analytics
+    },
 };
