@@ -199,84 +199,191 @@ body {
 }
 
 /* Accessibility Styles */
-.accessibility-bigger-text {
-  font-size: 1.25em !important;
-}
-
+.accessibility-bigger-text,
 .accessibility-bigger-text * {
-  font-size: inherit !important;
+  font-size: 1.25em !important;
+  line-height: 1.4 !important;
 }
 
-.accessibility-text-spacing {
+.accessibility-text-spacing,
+.accessibility-text-spacing * {
   letter-spacing: 0.1em !important;
   word-spacing: 0.2em !important;
-}
-
-.accessibility-text-spacing * {
-  letter-spacing: inherit !important;
-  word-spacing: inherit !important;
   line-height: var(--accessibility-line-height, 1.5) !important;
 }
 
-.accessibility-hide-images img:not([role="presentation"]):not([alt*="icon"]):not([alt*="logo"]) {
-  display: none !important;
+.accessibility-hide-images img:not([role="presentation"]):not([alt*="icon"]):not([alt*="logo"]):not([src*="icon"]):not([src*="logo"]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
-.accessibility-dyslexia-friendly {
-  font-family: 'OpenDyslexic', Arial, sans-serif !important;
-}
-
+.accessibility-dyslexia-friendly,
 .accessibility-dyslexia-friendly * {
-  font-family: inherit !important;
+  font-family: 'Comic Sans MS', 'OpenDyslexic', Arial, sans-serif !important;
+  font-weight: bold !important;
 }
 
-.accessibility-cursor {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="red" opacity="0.8"/></svg>'), auto !important;
+.accessibility-cursor,
+.accessibility-cursor * {
+  cursor: crosshair !important;
 }
 
+.accessibility-cursor button,
+.accessibility-cursor a,
+.accessibility-cursor [role="button"] {
+  cursor: pointer !important;
+  outline: 3px solid #ff0000 !important;
+  outline-offset: 2px !important;
+}
+
+.accessibility-pause-animations,
 .accessibility-pause-animations *,
 .accessibility-pause-animations *::before,
 .accessibility-pause-animations *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 .accessibility-contrast {
-  filter: contrast(150%) !important;
+  filter: contrast(150%) brightness(110%) !important;
 }
 
 .accessibility-smart-contrast {
-  filter: contrast(120%) brightness(110%) !important;
+  filter: contrast(130%) brightness(105%) saturate(120%) !important;
 }
 
-.accessibility-highlight-links a {
-  background-color: yellow !important;
-  color: black !important;
+.accessibility-highlight-links a,
+.accessibility-highlight-links [role="link"] {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
   text-decoration: underline !important;
   padding: 2px 4px !important;
   border-radius: 3px !important;
+  border: 2px solid #0066cc !important;
+  font-weight: bold !important;
 }
 
 .accessibility-oversized-widget button,
 .accessibility-oversized-widget input,
 .accessibility-oversized-widget select,
-.accessibility-oversized-widget textarea {
+.accessibility-oversized-widget textarea,
+.accessibility-oversized-widget [role="button"],
+.accessibility-oversized-widget [role="textbox"] {
   min-height: 48px !important;
   min-width: 48px !important;
   font-size: 1.2em !important;
   padding: 12px !important;
+  border-width: 2px !important;
 }
 
-/* Text alignment based on setting */
-body[style*="--accessibility-text-align: center"] * {
+.accessibility-oversized-widget .w-9,
+.accessibility-oversized-widget .h-9 {
+  width: 3rem !important;
+  height: 3rem !important;
+}
+
+.accessibility-oversized-widget .w-10,
+.accessibility-oversized-widget .h-10 {
+  width: 3.5rem !important;
+  height: 3.5rem !important;
+}
+
+/* Text alignment based on data attribute */
+body[data-text-align="center"] *:not(script):not(style) {
   text-align: center !important;
 }
 
-body[style*="--accessibility-text-align: right"] * {
+body[data-text-align="right"] *:not(script):not(style) {
   text-align: right !important;
 }
 
-body[style*="--accessibility-text-align: left"] * {
-  text-align: left !important;
+/* Line height override */
+body[style*="--line-height-override"] *:not(script):not(style) {
+  line-height: var(--line-height-override) !important;
+}
+
+/* Page structure visibility */
+body[data-show-structure="true"] h1,
+body[data-show-structure="true"] h2,
+body[data-show-structure="true"] h3,
+body[data-show-structure="true"] h4,
+body[data-show-structure="true"] h5,
+body[data-show-structure="true"] h6 {
+  outline: 2px solid #0066cc !important;
+  outline-offset: 2px !important;
+  background-color: rgba(0, 102, 204, 0.1) !important;
+}
+
+body[data-show-structure="true"] nav {
+  outline: 2px solid #00cc66 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(0, 204, 102, 0.1) !important;
+}
+
+body[data-show-structure="true"] main {
+  outline: 2px solid #cc6600 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(204, 102, 0, 0.1) !important;
+}
+
+body[data-show-structure="true"] section {
+  outline: 1px dashed #666666 !important;
+  outline-offset: 1px !important;
+}
+
+/* Screen reader support */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus improvements for accessibility */
+.accessibility-cursor *:focus,
+.accessibility-cursor *:focus-visible {
+  outline: 3px solid #ff6600 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(255, 102, 0, 0.3) !important;
+}
+
+/* High contrast mode improvements */
+@media (prefers-contrast: high) {
+  .accessibility-contrast {
+    filter: contrast(200%) brightness(120%) !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .accessibility-pause-animations *,
+  .accessibility-pause-animations *::before,
+  .accessibility-pause-animations *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Tooltip styles for accessibility */
+body[data-show-tooltips="true"] [title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
 }
