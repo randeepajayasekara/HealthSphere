@@ -68,6 +68,13 @@ import {
   Moon,
   Sun,
   Monitor,
+  QrCode,
+  AlarmClock,
+  ScanLine,
+  Stethoscope,
+  Search,
+  IdCard,
+  Brain,
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -131,6 +138,13 @@ const iconMap = {
   "list-checks": ListChecks,
   bot: Bot,
   activity: Activity,
+  "qr-code": QrCode,
+  "alarm-clock": AlarmClock,
+  scan: ScanLine,
+  stethoscope: Stethoscope,
+  search: Search,
+  "id-card": IdCard,
+  brain: Brain,
 };
 
 interface DashboardSidebarProps {

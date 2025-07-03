@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
         <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed }}>
             <AccessibilityProvider>
-                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-950 dark:to-zinc-950 transition-colors duration-300">
+                <div className="min-h-screen bg-zinc-50 dark:bg-black transition-colors duration-300">
                     {/* Mobile Header */}
                     <div className="md:hidden">
                         <MobileHeader />

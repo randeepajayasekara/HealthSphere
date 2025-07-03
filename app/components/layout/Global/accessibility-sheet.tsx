@@ -69,11 +69,14 @@ const AccessibilityToggle = ({
 }) => (
   <div className={cn("flex items-center justify-between p-4 rounded-lg border border-red-200/50 dark:border-red-800/50 bg-red-50/30 dark:bg-red-950/20", className)}>
     <div className="flex items-center gap-3">
-      <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
-        <Icon className="w-5 h-5 text-red-600 dark:text-red-400" />
+      <div className={cn("p-2 rounded-lg", settings[settingKey] ? "bg-red-200 dark:bg-red-800" : "bg-red-100 dark:bg-red-900/30")}>
+        <Icon className={cn("w-5 h-5", settings[settingKey] ? "text-red-700 dark:text-red-300" : "text-red-600 dark:text-red-400")} />
       </div>
       <div>
-        <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100">{title}</h4>
+        <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100">
+          {title}
+          {settings[settingKey] && <span className="ml-2 text-xs text-green-600 dark:text-green-400">✓ Active</span>}
+        </h4>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">{description}</p>
       </div>
     </div>

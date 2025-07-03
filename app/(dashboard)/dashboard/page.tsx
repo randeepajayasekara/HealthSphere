@@ -2,108 +2,123 @@
 
 import { ProtectedRoute } from '@/app/components/auth/protected-route';
 import { useAuth } from '@/app/contexts/auth-context';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, FileText, Pill, User, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { InteractiveDashboard } from '@/app/components/dashboard/interactive-dashboard';
+import { UMIDPrompt } from '@/app/components/dashboard/umid-prompt';
+import { DashboardService, UMIDService } from '@/lib/firestore/dashboard-services';
+import { createDefaultDashboardLayout } from '@/app/utils/widgets';
+import { createInitialUMID } from '@/app/utils/umid';
+import type { WidgetConfig } from '@/app/utils/widgets';
+import type { UniversalMedicalID } from '@/app/types';
+
+interface DashboardLayout {
+    id: string;
+    patientId: string;
+    name: string;
+    widgets: WidgetConfig[];
+    isDefault: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
 import { motion } from 'framer-motion';
-import { ModeToggle } from '@/app/components/features/toggles/theme-toggle';
+import { Loader2 } from 'lucide-react';
 
 export default function PatientDashboard() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
+    const [dashboardLayout, setDashboardLayout] = useState<DashboardLayout | null>(null);
+    const [umid, setUmid] = useState<UniversalMedicalID | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [showUMIDPrompt, setShowUMIDPrompt] = useState(false);
+
+    // Load dashboard and UMID data
+    useEffect(() => {
+        if (!user) return;
+
+        const loadDashboardData = async () => {
+            try {
+                // Load user's dashboard layouts
+                const layouts = await DashboardService.getUserDashboardLayouts(user.id);
+                let defaultLayout = layouts.find(l => l.isDefault);
+
+                // Create default layout if none exists
+                if (!defaultLayout) {
+                    defaultLayout = createDefaultDashboardLayout(user.id);
+                    await DashboardService.saveDashboardLayout(defaultLayout, user.id);
+                }
+
+                setDashboardLayout(defaultLayout);
+
+                // Load UMID
+                const userUMID = await UMIDService.getUMIDByPatientId(user.id);
+                if (userUMID) {
+                    setUmid(userUMID);
+                } else {
+                    // Show UMID creation prompt
+                    setShowUMIDPrompt(true);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadDashboardData();
+    }, [user]);
+
+    // Handle UMID creation
+    const handleCreateUMID = async () => {
+        if (!user) return;
+
+        try {
+            const newUMID = createInitialUMID(
+                user.id, 
+                user.email, 
+                `${user.firstName} ${user.lastName}`
+            );
+
+            await UMIDService.saveUMID(newUMID as UniversalMedicalID, user.id);
+            setUmid(newUMID as UniversalMedicalID);
+            setShowUMIDPrompt(false);
+        } catch (error) {
+            console.error('Error creating UMID:', error);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <ProtectedRoute allowedRoles={['patient']}>
+                <div className="min-h-screen bg-gradient-to-br from-slate-50 to-zinc-100 dark:from-zinc-950 dark:to-black flex items-center justify-center">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex flex-col items-center space-y-4"
+                    >
+                        <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+                        <p className="text-muted-foreground">Loading your dashboard...</p>
+                    </motion.div>
+                </div>
+            </ProtectedRoute>
+        );
+    }
 
     return (
         <ProtectedRoute allowedRoles={['patient']}>
-            <div className="min-h-screen bg-background">
-                {/* Header */}
-                <header className="border-b bg-card">
-                    <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <Avatar>
-                                <AvatarImage src={user?.profileImageUrl} />
-                                <AvatarFallback>
-                                    {user?.firstName[0]}{user?.lastName[0]}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <h1 className="text-xl font-semibold">
-                                    Welcome, {user?.firstName}
-                                </h1>
-                                <p className="text-muted-foreground">Patient Dashboard</p>
-                            </div>
-                        </div>
-                        <Button variant="outline" onClick={logout}>
-                            <LogOut className="w-4 h-4 mr-2" />
-                            Logout
-                        </Button>
-                    </div>
-                </header>
-
-                {/* Main Content */}
-                <main className="container mx-auto px-4 py-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <Calendar className="w-5 h-5 mr-2 text-primary" />
-                                        Appointments
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        View and manage your appointments
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <FileText className="w-5 h-5 mr-2 text-primary" />
-                                        Medical Records
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        Access your medical history and reports
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <Pill className="w-5 h-5 mr-2 text-primary" />
-                                        Prescriptions
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground">
-                                        View current and past prescriptions
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                        <ModeToggle/>
-                    </div>
-                </main>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-zinc-100 dark:from-zinc-950 dark:to-black">
+                {showUMIDPrompt && (
+                    <UMIDPrompt 
+                        onCreateUMID={handleCreateUMID}
+                        onDismiss={() => setShowUMIDPrompt(false)}
+                    />
+                )}
+                
+                {dashboardLayout && (
+                    <InteractiveDashboard 
+                        layout={dashboardLayout}
+                        umid={umid}
+                        onLayoutChange={(newLayout: DashboardLayout) => setDashboardLayout(newLayout)}
+                    />
+                )}
             </div>
         </ProtectedRoute>
     );
