@@ -30,7 +30,9 @@ import {
   Stethoscope,
   User,
   CalendarDays,
-  PhoneCall
+  PhoneCall,
+  Smartphone,
+  Monitor
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -221,6 +223,22 @@ export default function AppointmentsPage() {
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'all'>('all');
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [availableDoctors, setAvailableDoctors] = useState<UserType[]>([]);
+  const [screenSize, setScreenSize] = useState({ width: 1200, height: 800 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle screen size changes for adaptive layout
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setScreenSize({ width, height });
+      setIsMobile(width < 768);
+    };
+
+    handleResize(); // Initial call
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Real-time appointments subscription
   useEffect(() => {
