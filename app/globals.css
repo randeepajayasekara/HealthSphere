@@ -387,3 +387,665 @@ body[data-show-tooltips="true"] [title]:hover::after {
   white-space: nowrap;
   z-index: 1000;
 }
+
+/* Healthcare Professional Color Scheme - Dark zinc based with medical accents */
+
+:root {
+  /* Primary healthcare colors */
+  --medical-primary: #10b981; /* Emerald - healing, growth, medical cross */
+  --medical-secondary: #06b6d4; /* Cyan - cleanliness, technology, trust */
+  --medical-accent: #8b5cf6; /* Purple - premium care, expertise */
+  
+  /* Status colors for medical contexts */
+  --medical-success: #22c55e; /* Green - healthy, positive results */
+  --medical-warning: #f59e0b; /* Amber - caution, monitoring */
+  --medical-error: #ef4444; /* Red - critical, emergency */
+  --medical-info: #3b82f6; /* Blue - information, calm */
+  
+  /* Dark zinc foundation */
+  --zinc-50: #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
+  --zinc-950: #09090b;
+
+  /* Professional medical interface colors */
+  --background: #ffffff;
+  --foreground: var(--zinc-900);
+  --muted: var(--zinc-100);
+  --muted-foreground: var(--zinc-500);
+  --popover: #ffffff;
+  --popover-foreground: var(--zinc-900);
+  --card: #ffffff;
+  --card-foreground: var(--zinc-900);
+  --border: var(--zinc-200);
+  --input: var(--zinc-200);
+  --primary: var(--medical-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--zinc-100);
+  --secondary-foreground: var(--zinc-900);
+  --accent: var(--medical-accent);
+  --accent-foreground: #ffffff;
+  --destructive: var(--medical-error);
+  --destructive-foreground: #ffffff;
+  --ring: var(--medical-primary);
+  --radius: 0.75rem;
+
+  /* UMID specific colors */
+  --umid-primary: var(--medical-primary);
+  --umid-secondary: var(--medical-secondary);
+  --umid-accent: var(--medical-accent);
+  --umid-surface: #f8fafc;
+  --umid-border: var(--zinc-200);
+}
+
+.dark {
+  --background: var(--zinc-950);
+  --foreground: var(--zinc-50);
+  --muted: var(--zinc-800);
+  --muted-foreground: var(--zinc-400);
+  --popover: var(--zinc-900);
+  --popover-foreground: var(--zinc-50);
+  --card: var(--zinc-900);
+  --card-foreground: var(--zinc-50);
+  --border: var(--zinc-700);
+  --input: var(--zinc-700);
+  --primary: var(--medical-primary);
+  --primary-foreground: var(--zinc-900);
+  --secondary: var(--zinc-800);
+  --secondary-foreground: var(--zinc-50);
+  --accent: var(--medical-accent);
+  --accent-foreground: var(--zinc-50);
+  --destructive: var(--medical-error);
+  --destructive-foreground: var(--zinc-50);
+  --ring: var(--medical-primary);
+
+  /* UMID dark theme */
+  --umid-surface: var(--zinc-900);
+  --umid-border: var(--zinc-700);
+}
+
+/* Healthcare-specific utility classes */
+.medical-gradient {
+  background: linear-gradient(135deg, var(--medical-primary), var(--medical-secondary));
+}
+
+.medical-text-gradient {
+  background: linear-gradient(135deg, var(--medical-primary), var(--medical-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.medical-border {
+  border-color: var(--medical-primary);
+}
+
+.medical-focus {
+  border-color: var(--medical-primary);
+}
+
+.medical-focus:focus {
+  outline: 2px solid var(--medical-primary);
+  outline-offset: 2px;
+}
+
+/* UMID specific styles */
+.umid-card {
+  background-color: white;
+  border: 1px solid var(--zinc-200);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.dark .umid-card {
+  background-color: var(--zinc-900);
+  border-color: var(--zinc-700);
+}
+
+.umid-scanner-frame {
+  border: 2px dashed var(--medical-primary);
+  border-radius: 0.5rem;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.umid-qr-code {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border: 2px solid var(--medical-primary);
+}
+
+.umid-access-success {
+  background-color: rgb(240 253 244);
+  border-color: rgb(187 247 208);
+  color: rgb(22 101 52);
+}
+
+.dark .umid-access-success {
+  background-color: rgba(34, 197, 94, 0.2);
+  border-color: rgb(22 101 52);
+  color: rgb(187 247 208);
+}
+
+.umid-access-error {
+  background-color: rgb(254 242 242);
+  border-color: rgb(254 202 202);
+  color: rgb(153 27 27);
+}
+
+.dark .umid-access-error {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgb(153 27 27);
+  color: rgb(254 202 202);
+}
+
+/* Medical status indicators */
+.status-critical {
+  background-color: rgb(254 242 242);
+  color: rgb(153 27 27);
+  border-color: rgb(254 202 202);
+}
+
+.dark .status-critical {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: rgb(254 202 202);
+  border-color: rgb(153 27 27);
+}
+
+.status-warning {
+  background-color: rgb(255 251 235);
+  color: rgb(146 64 14);
+  border-color: rgb(253 230 138);
+}
+
+.dark .status-warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: rgb(253 230 138);
+  border-color: rgb(146 64 14);
+}
+
+.status-normal {
+  background-color: rgb(240 253 244);
+  color: rgb(22 101 52);
+  border-color: rgb(187 247 208);
+}
+
+.dark .status-normal {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: rgb(187 247 208);
+  border-color: rgb(22 101 52);
+}
+
+.status-info {
+  background-color: rgb(239 246 255);
+  color: rgb(30 58 138);
+  border-color: rgb(191 219 254);
+}
+
+.dark .status-info {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: rgb(191 219 254);
+  border-color: rgb(30 58 138);
+}
+
+/* Accessibility enhancements for medical interfaces */
+.medical-high-contrast {
+  filter: contrast(1.2);
+}
+
+.medical-focus-visible:focus-visible {
+  outline: 3px solid var(--medical-primary);
+  outline-offset: 2px;
+}
+
+/* Emergency mode styling */
+.emergency-mode {
+  animation: emergency-pulse 2s infinite;
+}
+
+@keyframes emergency-pulse {
+  0%, 100% {
+    background-color: var(--medical-error);
+    opacity: 1;
+  }
+  50% {
+    background-color: var(--medical-warning);
+    opacity: 0.8;
+  }
+}
+
+/* Professional medical card layouts */
+.medical-card-patient {
+  border-left: 4px solid rgb(59 130 246);
+  background-color: rgb(239 246 255);
+}
+
+.dark .medical-card-patient {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.medical-card-critical {
+  border-left: 4px solid rgb(239 68 68);
+  background-color: rgb(254 242 242);
+}
+
+.dark .medical-card-critical {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.medical-card-medication {
+  border-left: 4px solid rgb(34 197 94);
+  background-color: rgb(240 253 244);
+}
+
+.dark .medical-card-medication {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.medical-card-allergy {
+  border-left: 4px solid rgb(239 68 68);
+  background-color: rgb(254 242 242);
+}
+
+.dark .medical-card-allergy {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.medical-card-condition {
+  border-left: 4px solid rgb(249 115 22);
+  background-color: rgb(255 247 237);
+}
+
+.dark .medical-card-condition {
+  background-color: rgba(249, 115, 22, 0.1);
+}
+
+/* Animation for medical interfaces */
+.medical-fade-in {
+  animation: medicalFadeIn 0.5s ease-out;
+}
+
+@keyframes medicalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medical-slide-up {
+  animation: medicalSlideUp 0.3s ease-out;
+}
+
+@keyframes medicalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Healthcare data visualization */
+.health-metric-good {
+  color: rgb(34 197 94);
+}
+
+.dark .health-metric-good {
+  color: rgb(74 222 128);
+}
+
+.health-metric-warning {
+  color: rgb(245 158 11);
+}
+
+.dark .health-metric-warning {
+  color: rgb(251 191 36);
+}
+
+.health-metric-critical {
+  color: rgb(239 68 68);
+}
+
+.dark .health-metric-critical {
+  color: rgb(248 113 113);
+}
+
+/* Medical badge variants */
+.badge-patient {
+  background-color: rgb(219 234 254);
+  color: rgb(30 58 138);
+}
+
+.dark .badge-patient {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: rgb(191 219 254);
+}
+
+.badge-doctor {
+  background-color: rgb(209 250 229);
+  color: rgb(6 78 59);
+}
+
+.dark .badge-doctor {
+  background-color: rgba(16, 185, 129, 0.3);
+  color: rgb(167 243 208);
+}
+
+.badge-nurse {
+  background-color: rgb(237 233 254);
+  color: rgb(91 33 182);
+}
+
+.dark .badge-nurse {
+  background-color: rgba(139, 92, 246, 0.3);
+  color: rgb(196 181 253);
+}
+
+.badge-admin {
+  background-color: rgb(243 244 246);
+  color: rgb(55 65 81);
+}
+
+.dark .badge-admin {
+  background-color: rgba(75, 85, 99, 0.3);
+  color: rgb(209 213 219);
+}
+
+.badge-emergency {
+  background-color: rgb(254 242 242);
+  color: rgb(153 27 27);
+}
+
+.dark .badge-emergency {
+  background-color: rgba(239, 68, 68, 0.3);
+  color: rgb(254 202 202);
+}
+
+/* Healthcare form styling */
+.medical-form-field {
+  margin-bottom: 0.5rem;
+}
+
+.medical-form-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(63 63 70);
+}
+
+.dark .medical-form-field label {
+  color: rgb(212 212 216);
+}
+
+.medical-form-field input,
+.medical-form-field textarea,
+.medical-form-field select {
+  border-color: var(--medical-primary);
+}
+
+.medical-form-field input:focus,
+.medical-form-field textarea:focus,
+.medical-form-field select:focus {
+  outline: 2px solid var(--medical-primary);
+  outline-offset: 2px;
+}
+
+.medical-form-required::after {
+  content: " *";
+  color: var(--medical-error);
+}
+
+/* Responsive medical layouts */
+@media (max-width: 768px) {
+  .umid-scanner-frame {
+    border-width: 1px;
+  }
+  
+  .medical-card-patient,
+  .medical-card-critical,
+  .medical-card-medication,
+  .medical-card-allergy,
+  .medical-card-condition {
+    border-left-width: 2px;
+  }
+}
+
+/* Print styles for medical documents */
+@media print {
+  .umid-qr-code {
+    border: 2px solid #000 !important;
+    background: white !important;
+  }
+  
+  .medical-card-patient,
+  .medical-card-critical,
+  .medical-card-medication,
+  .medical-card-allergy,
+  .medical-card-condition {
+    border-left: 4px solid #000 !important;
+    background: white !important;
+  }
+}
+
+/* Healthcare Theme Extensions */
+:root {
+  /* Healthcare-specific color palette */
+  --health-primary: 220 100% 50%; /* Medical blue */
+  --health-secondary: 160 100% 40%; /* Medical teal */
+  --health-success: 142 76% 36%; /* Medical green */
+  --health-warning: 38 92% 50%; /* Medical amber */
+  --health-danger: 0 84% 60%; /* Medical red */
+  --health-emergency: 0 65% 51%; /* Emergency red */
+  
+  /* AI Assistant specific colors */
+  --ai-primary: 220 100% 50%;
+  --ai-secondary: 160 100% 40%;
+  --ai-accent: 200 100% 45%;
+  --ai-muted: 220 13% 91%;
+  --ai-border: 220 13% 91%;
+  
+  /* Healthcare gradients */
+  --health-gradient: linear-gradient(135deg, hsl(var(--health-primary)), hsl(var(--health-secondary)));
+  --ai-gradient: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-accent)));
+  --emergency-gradient: linear-gradient(135deg, hsl(var(--health-danger)), hsl(var(--health-emergency)));
+}
+
+.dark {
+  /* Dark mode healthcare colors */
+  --health-primary: 220 100% 60%;
+  --health-secondary: 160 100% 50%;
+  --health-success: 142 76% 46%;
+  --health-warning: 38 92% 60%;
+  --health-danger: 0 84% 70%;
+  --health-emergency: 0 65% 61%;
+  
+  --ai-primary: 220 100% 60%;
+  --ai-secondary: 160 100% 50%;
+  --ai-accent: 200 100% 55%;
+  --ai-muted: 220 13% 15%;
+  --ai-border: 220 13% 25%;
+}
+
+/* Health Assistant specific styles */
+.health-assistant-page {
+  background: linear-gradient(135deg, 
+    hsl(220 60% 98%) 0%, 
+    hsl(200 100% 97%) 50%, 
+    hsl(180 100% 98%) 100%
+  );
+}
+
+.dark .health-assistant-page {
+  background: linear-gradient(135deg, 
+    hsl(220 20% 8%) 0%, 
+    hsl(200 30% 7%) 50%, 
+    hsl(180 20% 8%) 100%
+  );
+}
+
+.ai-message-card {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.dark .ai-message-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.ai-message-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+}
+
+.emergency-alert {
+  animation: emergency-pulse 2s infinite;
+  border-left: 4px solid hsl(var(--health-emergency));
+}
+
+@keyframes emergency-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.health-metric-card {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.05) 0%, 
+    rgba(16, 185, 129, 0.05) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.health-metric-card:hover {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(16, 185, 129, 0.1) 100%
+  );
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.report-analysis-card {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.05) 0%, 
+    rgba(59, 130, 246, 0.05) 100%
+  );
+  border-left: 4px solid hsl(var(--health-success));
+}
+
+.recommendation-card {
+  background: linear-gradient(135deg, 
+    rgba(251, 191, 36, 0.05) 0%, 
+    rgba(59, 130, 246, 0.05) 100%
+  );
+  border-left: 4px solid hsl(var(--health-warning));
+}
+
+/* Accessibility enhancements */
+.health-assistant-focus {
+  outline: 2px solid hsl(var(--health-primary));
+  outline-offset: 2px;
+}
+
+/* Medical icon animations */
+.medical-icon-pulse {
+  animation: medical-pulse 2s ease-in-out infinite;
+}
+
+@keyframes medical-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Loading animations for AI processing */
+.ai-processing {
+  animation: ai-thinking 1.5s ease-in-out infinite;
+}
+
+@keyframes ai-thinking {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Healthcare professional colors */
+.doctor-theme { --role-color: hsl(220 100% 50%); }
+.nurse-theme { --role-color: hsl(160 100% 40%); }
+.patient-theme { --role-color: hsl(142 76% 36%); }
+.pharmacist-theme { --role-color: hsl(280 100% 50%); }
+.admin-theme { --role-color: hsl(0 84% 60%); }
+
+.role-indicator {
+  background: var(--role-color);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Medical urgency indicators */
+.urgency-low { border-left-color: hsl(var(--health-success)); }
+.urgency-medium { border-left-color: hsl(var(--health-warning)); }
+.urgency-high { border-left-color: hsl(var(--health-danger)); }
+.urgency-emergency { 
+  border-left-color: hsl(var(--health-emergency));
+  background: linear-gradient(90deg, 
+    rgba(220, 38, 38, 0.1) 0%, 
+    transparent 100%
+  );
+}
+
+/* Responsive typography for medical content */
+.medical-content {
+  line-height: 1.6;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+.medical-content h1,
+.medical-content h2,
+.medical-content h3 {
+  font-weight: 600;
+  color: hsl(var(--health-primary));
+  margin-bottom: 0.5rem;
+}
+
+.medical-content p {
+  margin-bottom: 1rem;
+  color: hsl(220 13% 40%);
+}
+
+.dark .medical-content p {
+  color: hsl(220 13% 70%);
+}
+
+/* Print styles for medical reports */
+@media print {
+  .health-assistant-page {
+    background: white !important;
+  }
+  
+  .ai-message-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .emergency-alert {
+    border: 2px solid black !important;
+    background: white !important;
+  }
+}
