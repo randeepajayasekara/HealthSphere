@@ -3,7 +3,7 @@
 import { ProtectedRoute } from '@/app/components/auth/protected-route';
 import { useAuth } from '@/app/contexts/auth-context';
 import { useState, useEffect } from 'react';
-import { InteractiveDashboard } from '@/app/components/dashboard/interactive-dashboard';
+import { StaticDashboard } from '@/app/components/dashboard/static-dashboard';
 import { UMIDPrompt } from '@/app/components/dashboard/umid-prompt';
 import { DashboardService, UMIDService } from '@/lib/firestore/dashboard-services';
 import { createDefaultDashboardLayout } from '@/app/utils/widgets';
@@ -113,7 +113,7 @@ export default function PatientDashboard() {
                 )}
                 
                 {dashboardLayout && (
-                    <InteractiveDashboard 
+                    <StaticDashboard 
                         layout={dashboardLayout}
                         umid={umid}
                         onLayoutChange={(newLayout: DashboardLayout) => setDashboardLayout(newLayout)}
