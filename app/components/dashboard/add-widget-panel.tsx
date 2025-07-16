@@ -18,7 +18,11 @@ import {
   Video, 
   Brain, 
   TestTube, 
-  Clock 
+  Clock,
+  CreditCard,
+  Receipt,
+  Building2,
+  DollarSign
 } from 'lucide-react';
 import { createWidget, type WidgetConfig, type WidgetType } from '@/app/utils/widgets';
 
@@ -125,6 +129,38 @@ const availableWidgetTypes: Array<{
     icon: Clock,
     category: 'Health Management',
     color: 'text-amber-600'
+  },
+  {
+    type: 'billing_overview',
+    title: 'Billing Overview',
+    description: 'View your bills, payments, and outstanding amounts',
+    icon: Receipt,
+    category: 'Financial',
+    color: 'text-red-600'
+  },
+  {
+    type: 'payment_tracker',
+    title: 'Payment Tracker',
+    description: 'Track payment history and upcoming due dates',
+    icon: CreditCard,
+    category: 'Financial',
+    color: 'text-emerald-600'
+  },
+  {
+    type: 'insurance_claims',
+    title: 'Insurance Claims',
+    description: 'Monitor your insurance claims and coverage',
+    icon: Building2,
+    category: 'Financial',
+    color: 'text-blue-600'
+  },
+  {
+    type: 'financial_summary',
+    title: 'Financial Summary',
+    description: 'Complete overview of your healthcare expenses',
+    icon: DollarSign,
+    category: 'Financial',
+    color: 'text-zinc-600'
   }
 ];
 
