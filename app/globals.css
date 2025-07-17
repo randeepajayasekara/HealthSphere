@@ -1,7 +1,123 @@
 @import "tailwindcss";
 
-
 @custom-variant dark (&:is(.dark *));
+
+/* Security and Anti-Vandalism Styles */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-context {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.no-drag {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.protected {
+  position: relative;
+  overflow: hidden;
+}
+
+.secure-content {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.security-focus:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* Red-based theme colors */
+:root {
+  --red-primary: #dc2626;
+  --red-secondary: #b91c1c;
+  --red-accent: #fecaca;
+  --red-light: #fee2e2;
+  --red-dark: #7f1d1d;
+}
+
+/* Disable selection on key elements */
+::selection {
+  background: rgba(220, 38, 38, 0.2);
+  color: inherit;
+}
+
+::-moz-selection {
+  background: rgba(220, 38, 38, 0.2);
+  color: inherit;
+}
+
+/* Disable image dragging globally */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Print security */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Disable printing of sensitive content */
+  .secure-content {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .high-contrast {
+    filter: contrast(1.5);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 @font-face {
   font-family: "Poppins";
@@ -212,14 +328,17 @@ body {
   line-height: var(--accessibility-line-height, 1.5) !important;
 }
 
-.accessibility-hide-images img:not([role="presentation"]):not([alt*="icon"]):not([alt*="logo"]):not([src*="icon"]):not([src*="logo"]) {
+.accessibility-hide-images
+  img:not([role="presentation"]):not([alt*="icon"]):not([alt*="logo"]):not(
+    [src*="icon"]
+  ):not([src*="logo"]) {
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
 .accessibility-dyslexia-friendly,
 .accessibility-dyslexia-friendly * {
-  font-family: 'Comic Sans MS', 'OpenDyslexic', Arial, sans-serif !important;
+  font-family: "Comic Sans MS", "OpenDyslexic", Arial, sans-serif !important;
   font-weight: bold !important;
 }
 
@@ -391,17 +510,17 @@ body[data-show-tooltips="true"] [title]:hover::after {
 /* Healthcare Professional Color Scheme - Dark zinc based with medical accents */
 
 :root {
-  /* Primary healthcare colors */
-  --medical-primary: #10b981; /* Emerald - healing, growth, medical cross */
-  --medical-secondary: #06b6d4; /* Cyan - cleanliness, technology, trust */
-  --medical-accent: #8b5cf6; /* Purple - premium care, expertise */
-  
+  /* Primary healthcare colors - Red-based scheme */
+  --medical-primary: #dc2626; /* Red - medical cross, healthcare */
+  --medical-secondary: #b91c1c; /* Darker red - secondary actions */
+  --medical-accent: #B12C00; /* Amber - warning, attention */
+
   /* Status colors for medical contexts */
-  --medical-success: #22c55e; /* Green - healthy, positive results */
+  --medical-success: #059669; /* Emerald - maintaining for status success */
   --medical-warning: #f59e0b; /* Amber - caution, monitoring */
-  --medical-error: #ef4444; /* Red - critical, emergency */
+  --medical-error: #dc2626; /* Red - critical, emergency */
   --medical-info: #3b82f6; /* Blue - information, calm */
-  
+
   /* Dark zinc foundation */
   --zinc-50: #fafafa;
   --zinc-100: #f4f4f5;
@@ -473,11 +592,19 @@ body[data-show-tooltips="true"] [title]:hover::after {
 
 /* Healthcare-specific utility classes */
 .medical-gradient {
-  background: linear-gradient(135deg, var(--medical-primary), var(--medical-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--medical-primary),
+    var(--medical-secondary)
+  );
 }
 
 .medical-text-gradient {
-  background: linear-gradient(135deg, var(--medical-primary), var(--medical-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--medical-primary),
+    var(--medical-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -512,7 +639,7 @@ body[data-show-tooltips="true"] [title]:hover::after {
 .umid-scanner-frame {
   border: 2px dashed var(--medical-primary);
   border-radius: 0.5rem;
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(220, 38, 38, 0.05);
 }
 
 .umid-qr-code {
@@ -524,76 +651,76 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 .umid-access-success {
-  background-color: rgb(240 253 244);
-  border-color: rgb(187 247 208);
-  color: rgb(22 101 52);
+  background-color: rgb(236 253 245);
+  border-color: rgb(167 243 208);
+  color: rgb(5 150 105);
 }
 
 .dark .umid-access-success {
-  background-color: rgba(34, 197, 94, 0.2);
-  border-color: rgb(22 101 52);
-  color: rgb(187 247 208);
+  background-color: rgba(5, 150, 105, 0.2);
+  border-color: rgb(5 150 105);
+  color: rgb(167 243 208);
 }
 
 .umid-access-error {
   background-color: rgb(254 242 242);
   border-color: rgb(254 202 202);
-  color: rgb(153 27 27);
+  color: rgb(220 38 38);
 }
 
 .dark .umid-access-error {
-  background-color: rgba(239, 68, 68, 0.2);
-  border-color: rgb(153 27 27);
+  background-color: rgba(220, 38, 38, 0.2);
+  border-color: rgb(220 38 38);
   color: rgb(254 202 202);
 }
 
 /* Medical status indicators */
 .status-critical {
   background-color: rgb(254 242 242);
-  color: rgb(153 27 27);
+  color: rgb(220 38 38);
   border-color: rgb(254 202 202);
 }
 
 .dark .status-critical {
-  background-color: rgba(239, 68, 68, 0.2);
+  background-color: rgba(220, 38, 38, 0.2);
   color: rgb(254 202 202);
-  border-color: rgb(153 27 27);
+  border-color: rgb(220 38 38);
 }
 
 .status-warning {
   background-color: rgb(255 251 235);
-  color: rgb(146 64 14);
+  color: rgb(245 158 11);
   border-color: rgb(253 230 138);
 }
 
 .dark .status-warning {
   background-color: rgba(245, 158, 11, 0.2);
   color: rgb(253 230 138);
-  border-color: rgb(146 64 14);
+  border-color: rgb(245, 158, 11);
 }
 
 .status-normal {
-  background-color: rgb(240 253 244);
-  color: rgb(22 101 52);
-  border-color: rgb(187 247 208);
+  background-color: rgb(236 253 245);
+  color: rgb(5 150 105);
+  border-color: rgb(167 243 208);
 }
 
 .dark .status-normal {
-  background-color: rgba(34, 197, 94, 0.2);
-  color: rgb(187 247 208);
-  border-color: rgb(22 101 52);
+  background-color: rgba(5, 150, 105, 0.2);
+  color: rgb(167 243 208);
+  border-color: rgb(5 150 105);
 }
 
 .status-info {
   background-color: rgb(239 246 255);
-  color: rgb(30 58 138);
+  color: rgb(59 130 246);
   border-color: rgb(191 219 254);
 }
 
 .dark .status-info {
   background-color: rgba(59, 130, 246, 0.2);
   color: rgb(191 219 254);
-  border-color: rgb(30 58 138);
+  border-color: rgb(59 130 246);
 }
 
 /* Accessibility enhancements for medical interfaces */
@@ -612,7 +739,8 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 @keyframes emergency-pulse {
-  0%, 100% {
+  0%,
+  100% {
     background-color: var(--medical-error);
     opacity: 1;
   }
@@ -633,39 +761,39 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 .medical-card-critical {
-  border-left: 4px solid rgb(239 68 68);
+  border-left: 4px solid rgb(220 38 38);
   background-color: rgb(254 242 242);
 }
 
 .dark .medical-card-critical {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgba(220, 38, 38, 0.1);
 }
 
 .medical-card-medication {
-  border-left: 4px solid rgb(34 197 94);
-  background-color: rgb(240 253 244);
+  border-left: 4px solid rgb(5 150 105);
+  background-color: rgb(236 253 245);
 }
 
 .dark .medical-card-medication {
-  background-color: rgba(34, 197, 94, 0.1);
+  background-color: rgba(5, 150, 105, 0.1);
 }
 
 .medical-card-allergy {
-  border-left: 4px solid rgb(239 68 68);
+  border-left: 4px solid rgb(220 38 38);
   background-color: rgb(254 242 242);
 }
 
 .dark .medical-card-allergy {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgba(220, 38, 38, 0.1);
 }
 
 .medical-card-condition {
-  border-left: 4px solid rgb(249 115 22);
-  background-color: rgb(255 247 237);
+  border-left: 4px solid rgb(245 158 11);
+  background-color: rgb(255 251 235);
 }
 
 .dark .medical-card-condition {
-  background-color: rgba(249, 115, 22, 0.1);
+  background-color: rgba(245, 158, 11, 0.1);
 }
 
 /* Animation for medical interfaces */
@@ -701,11 +829,11 @@ body[data-show-tooltips="true"] [title]:hover::after {
 
 /* Healthcare data visualization */
 .health-metric-good {
-  color: rgb(34 197 94);
+  color: rgb(5 150 105);
 }
 
 .dark .health-metric-good {
-  color: rgb(74 222 128);
+  color: rgb(167 243 208);
 }
 
 .health-metric-warning {
@@ -713,21 +841,21 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 .dark .health-metric-warning {
-  color: rgb(251 191 36);
+  color: rgb(253 230 138);
 }
 
 .health-metric-critical {
-  color: rgb(239 68 68);
+  color: rgb(220 38 38);
 }
 
 .dark .health-metric-critical {
-  color: rgb(248 113 113);
+  color: rgb(254 202 202);
 }
 
 /* Medical badge variants */
 .badge-patient {
   background-color: rgb(219 234 254);
-  color: rgb(30 58 138);
+  color: rgb(59 130 246);
 }
 
 .dark .badge-patient {
@@ -736,23 +864,23 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 .badge-doctor {
-  background-color: rgb(209 250 229);
-  color: rgb(6 78 59);
+  background-color: rgb(254 226 226);
+  color: rgb(220 38 38);
 }
 
 .dark .badge-doctor {
-  background-color: rgba(16, 185, 129, 0.3);
-  color: rgb(167 243 208);
+  background-color: rgba(220, 38, 38, 0.3);
+  color: rgb(254 202 202);
 }
 
 .badge-nurse {
-  background-color: rgb(237 233 254);
-  color: rgb(91 33 182);
+  background-color: rgb(255 237 213);
+  color: rgb(245 158 11);
 }
 
 .dark .badge-nurse {
-  background-color: rgba(139, 92, 246, 0.3);
-  color: rgb(196 181 253);
+  background-color: rgba(245, 158, 11, 0.3);
+  color: rgb(253 230 138);
 }
 
 .badge-admin {
@@ -767,11 +895,11 @@ body[data-show-tooltips="true"] [title]:hover::after {
 
 .badge-emergency {
   background-color: rgb(254 242 242);
-  color: rgb(153 27 27);
+  color: rgb(220 38 38);
 }
 
 .dark .badge-emergency {
-  background-color: rgba(239, 68, 68, 0.3);
+  background-color: rgba(220, 38, 38, 0.3);
   color: rgb(254 202 202);
 }
 
@@ -813,7 +941,7 @@ body[data-show-tooltips="true"] [title]:hover::after {
   .umid-scanner-frame {
     border-width: 1px;
   }
-  
+
   .medical-card-patient,
   .medical-card-critical,
   .medical-card-medication,
@@ -829,7 +957,7 @@ body[data-show-tooltips="true"] [title]:hover::after {
     border: 2px solid #000 !important;
     background: white !important;
   }
-  
+
   .medical-card-patient,
   .medical-card-critical,
   .medical-card-medication,
@@ -842,57 +970,71 @@ body[data-show-tooltips="true"] [title]:hover::after {
 
 /* Healthcare Theme Extensions */
 :root {
-  /* Healthcare-specific color palette */
-  --health-primary: 220 100% 50%; /* Medical blue */
-  --health-secondary: 160 100% 40%; /* Medical teal */
-  --health-success: 142 76% 36%; /* Medical green */
+  /* Healthcare-specific color palette - Red-based */
+  --health-primary: 0 84% 60%; /* Medical red */
+  --health-secondary: 0 69% 55%; /* Secondary red */
+  --health-success: 160 84% 39%; /* Emerald for success status */
   --health-warning: 38 92% 50%; /* Medical amber */
   --health-danger: 0 84% 60%; /* Medical red */
-  --health-emergency: 0 65% 51%; /* Emergency red */
-  
+  --health-emergency: 0 100% 45%; /* Emergency red */
+
   /* AI Assistant specific colors */
-  --ai-primary: 220 100% 50%;
-  --ai-secondary: 160 100% 40%;
-  --ai-accent: 200 100% 45%;
-  --ai-muted: 220 13% 91%;
-  --ai-border: 220 13% 91%;
-  
+  --ai-primary: 0 84% 60%;
+  --ai-secondary: 0 69% 55%;
+  --ai-accent: 20 91% 48%;
+  --ai-muted: 0 5% 91%;
+  --ai-border: 0 5% 91%;
+
   /* Healthcare gradients */
-  --health-gradient: linear-gradient(135deg, hsl(var(--health-primary)), hsl(var(--health-secondary)));
-  --ai-gradient: linear-gradient(135deg, hsl(var(--ai-primary)), hsl(var(--ai-accent)));
-  --emergency-gradient: linear-gradient(135deg, hsl(var(--health-danger)), hsl(var(--health-emergency)));
+  --health-gradient: linear-gradient(
+    135deg,
+    hsl(var(--health-primary)),
+    hsl(var(--health-secondary))
+  );
+  --ai-gradient: linear-gradient(
+    135deg,
+    hsl(var(--ai-primary)),
+    hsl(var(--ai-accent))
+  );
+  --emergency-gradient: linear-gradient(
+    135deg,
+    hsl(var(--health-danger)),
+    hsl(var(--health-emergency))
+  );
 }
 
 .dark {
-  /* Dark mode healthcare colors */
-  --health-primary: 220 100% 60%;
-  --health-secondary: 160 100% 50%;
-  --health-success: 142 76% 46%;
+  /* Dark mode healthcare colors - Red-based */
+  --health-primary: 0 84% 70%;
+  --health-secondary: 0 69% 65%;
+  --health-success: 160 84% 49%;
   --health-warning: 38 92% 60%;
   --health-danger: 0 84% 70%;
-  --health-emergency: 0 65% 61%;
-  
-  --ai-primary: 220 100% 60%;
-  --ai-secondary: 160 100% 50%;
-  --ai-accent: 200 100% 55%;
-  --ai-muted: 220 13% 15%;
-  --ai-border: 220 13% 25%;
+  --health-emergency: 0 100% 55%;
+
+  --ai-primary: 0 84% 70%;
+  --ai-secondary: 0 69% 65%;
+  --ai-accent: 20 91% 58%;
+  --ai-muted: 0 5% 15%;
+  --ai-border: 0 5% 25%;
 }
 
 /* Health Assistant specific styles */
 .health-assistant-page {
-  background: linear-gradient(135deg, 
-    hsl(220 60% 98%) 0%, 
-    hsl(200 100% 97%) 50%, 
-    hsl(180 100% 98%) 100%
+  background: linear-gradient(
+    135deg,
+    hsl(0 60% 98%) 0%,
+    hsl(20 100% 97%) 50%,
+    hsl(40 100% 98%) 100%
   );
 }
 
 .dark .health-assistant-page {
-  background: linear-gradient(135deg, 
-    hsl(220 20% 8%) 0%, 
-    hsl(200 30% 7%) 50%, 
-    hsl(180 20% 8%) 100%
+  background: linear-gradient(
+    135deg,
+    hsl(0 20% 8%) 0%,
+    hsl(20 30% 7%) 50%,
+    hsl(40 20% 8%) 100%
   );
 }
 
@@ -900,17 +1042,17 @@ body[data-show-tooltips="true"] [title]:hover::after {
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .dark .ai-message-card {
   background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .ai-message-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
 }
 
 .emergency-alert {
@@ -919,39 +1061,48 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 @keyframes emergency-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .health-metric-card {
-  background: linear-gradient(135deg, 
-    rgba(59, 130, 246, 0.05) 0%, 
-    rgba(16, 185, 129, 0.05) 100%
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.05) 0%,
+    rgba(245, 158, 11, 0.05) 100%
   );
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.1);
   transition: all 0.3s ease;
 }
 
 .health-metric-card:hover {
-  background: linear-gradient(135deg, 
-    rgba(59, 130, 246, 0.1) 0%, 
-    rgba(16, 185, 129, 0.1) 100%
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.1) 0%,
+    rgba(245, 158, 11, 0.1) 100%
   );
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(220, 38, 38, 0.2);
 }
 
 .report-analysis-card {
-  background: linear-gradient(135deg, 
-    rgba(16, 185, 129, 0.05) 0%, 
-    rgba(59, 130, 246, 0.05) 100%
+  background: linear-gradient(
+    135deg,
+    rgba(5, 150, 105, 0.05) 0%,
+    rgba(220, 38, 38, 0.05) 100%
   );
   border-left: 4px solid hsl(var(--health-success));
 }
 
 .recommendation-card {
-  background: linear-gradient(135deg, 
-    rgba(251, 191, 36, 0.05) 0%, 
-    rgba(59, 130, 246, 0.05) 100%
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.05) 0%,
+    rgba(220, 38, 38, 0.05) 100%
   );
   border-left: 4px solid hsl(var(--health-warning));
 }
@@ -968,8 +1119,13 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 @keyframes medical-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 /* Loading animations for AI processing */
@@ -978,16 +1134,31 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 @keyframes ai-thinking {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-/* Healthcare professional colors */
-.doctor-theme { --role-color: hsl(220 100% 50%); }
-.nurse-theme { --role-color: hsl(160 100% 40%); }
-.patient-theme { --role-color: hsl(142 76% 36%); }
-.pharmacist-theme { --role-color: hsl(280 100% 50%); }
-.admin-theme { --role-color: hsl(0 84% 60%); }
+/* Healthcare professional colors - Red-based theme */
+.doctor-theme {
+  --role-color: hsl(0 84% 60%);
+}
+.nurse-theme {
+  --role-color: hsl(0 69% 55%);
+}
+.patient-theme {
+  --role-color: hsl(20 91% 48%);
+}
+.pharmacist-theme {
+  --role-color: hsl(38 92% 50%);
+}
+.admin-theme {
+  --role-color: hsl(0 84% 60%);
+}
 
 .role-indicator {
   background: var(--role-color);
@@ -999,13 +1170,20 @@ body[data-show-tooltips="true"] [title]:hover::after {
 }
 
 /* Medical urgency indicators */
-.urgency-low { border-left-color: hsl(var(--health-success)); }
-.urgency-medium { border-left-color: hsl(var(--health-warning)); }
-.urgency-high { border-left-color: hsl(var(--health-danger)); }
-.urgency-emergency { 
+.urgency-low {
+  border-left-color: hsl(160 84% 39%);
+}
+.urgency-medium {
+  border-left-color: hsl(var(--health-warning));
+}
+.urgency-high {
+  border-left-color: hsl(var(--health-danger));
+}
+.urgency-emergency {
   border-left-color: hsl(var(--health-emergency));
-  background: linear-gradient(90deg, 
-    rgba(220, 38, 38, 0.1) 0%, 
+  background: linear-gradient(
+    90deg,
+    rgba(220, 38, 38, 0.1) 0%,
     transparent 100%
   );
 }
@@ -1026,11 +1204,11 @@ body[data-show-tooltips="true"] [title]:hover::after {
 
 .medical-content p {
   margin-bottom: 1rem;
-  color: hsl(220 13% 40%);
+  color: hsl(0 0% 40%);
 }
 
 .dark .medical-content p {
-  color: hsl(220 13% 70%);
+  color: hsl(0 0% 70%);
 }
 
 /* Print styles for medical reports */
@@ -1038,12 +1216,12 @@ body[data-show-tooltips="true"] [title]:hover::after {
   .health-assistant-page {
     background: white !important;
   }
-  
+
   .ai-message-card {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  
+
   .emergency-alert {
     border: 2px solid black !important;
     background: white !important;
