@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc, collection, writeBatch } from 'firebase/firestore';
 import { auth, db } from '@/backend/config';
 import { User, UserRole } from '@/app/types';
+import seedContactData from './seed-contact-data';
 
 interface SeedUser {
     email: string;
@@ -468,6 +469,7 @@ export async function runSeeding(): Promise<void> {
         console.log('====================================');
         
         await seedUsers();
+        await seedContactData();
         
         console.log('\n✅ All seeding completed successfully!');
         console.log('\nYou can now use the following credentials to test different roles:');
