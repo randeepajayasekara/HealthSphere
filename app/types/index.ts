@@ -1854,3 +1854,113 @@ export interface SystemDependency {
     endpoint?: string;
     criticality: 'low' | 'medium' | 'high' | 'critical';
 }
+
+// -----------------------------------------------------------------------------
+// Blog related types
+// -----------------------------------------------------------------------------
+
+export type BlogCategory = 
+    | 'healthcare_tips' 
+    | 'medical_news' 
+    | 'patient_stories' 
+    | 'research_updates' 
+    | 'health_awareness' 
+    | 'technology' 
+    | 'wellness' 
+    | 'prevention'
+    | 'mental_health'
+    | 'nutrition'
+    | 'exercise'
+    | 'chronic_diseases'
+    | 'pediatric_health'
+    | 'senior_health';
+
+export type BlogStatus = 'draft' | 'published' | 'archived' | 'scheduled';
+
+export interface BlogPost {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: string;
+    category: BlogCategory;
+    tags: string[];
+    status: BlogStatus;
+    featured: boolean;
+    readingTime: number; // in minutes
+    views: number;
+    likes: number;
+    authorId: string;
+    authorName: string;
+    authorRole: UserRole;
+    authorAvatar?: string;
+    featuredImage?: string;
+    publishedAt?: Date;
+    scheduledFor?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    seoTitle?: string;
+    seoDescription?: string;
+    keywords?: string[];
+    relatedPosts?: string[]; // Array of post IDs
+}
+
+export interface BlogComment {
+    id: string;
+    postId: string;
+    userId: string;
+    userName: string;
+    userRole: UserRole;
+    userAvatar?: string;
+    content: string;
+    parentCommentId?: string; // For nested comments
+    approved: boolean;
+    likes: number;
+    replies?: BlogComment[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface BlogAnalytics {
+    postId: string;
+    views: number;
+    uniqueViews: number;
+    likes: number;
+    shares: number;
+    comments: number;
+    averageReadTime: number;
+    bounceRate: number;
+    engagementRate: number;
+    topReferrers: string[];
+    deviceBreakdown: {
+        mobile: number;
+        tablet: number;
+        desktop: number;
+    };
+    geographicData: {
+        country: string;
+        views: number;
+    }[];
+    createdAt: Date;
+}
+
+export interface BlogFilter {
+    category?: BlogCategory;
+    tags?: string[];
+    author?: string;
+    status?: BlogStatus;
+    featured?: boolean;
+    dateRange?: {
+        start: Date;
+        end: Date;
+    };
+    searchQuery?: string;
+}
+
+export interface BlogSearchResult {
+    posts: BlogPost[];
+    totalCount: number;
+    hasMore: boolean;
+    filters: BlogFilter;
+    sortBy: 'newest' | 'oldest' | 'most_viewed' | 'most_liked' | 'relevance';
+}

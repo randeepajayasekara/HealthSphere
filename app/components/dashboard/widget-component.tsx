@@ -25,7 +25,11 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  Loader2
+  Loader2,
+  Receipt,
+  CreditCard,
+  Building2,
+  DollarSign
 } from 'lucide-react';
 import { 
   DropdownMenu,
@@ -59,6 +63,10 @@ const iconMap = {
   Brain,
   TestTube,
   Clock,
+  Receipt,
+  CreditCard,
+  Building2,
+  DollarSign,
 };
 
 export function WidgetComponent({ 
@@ -244,6 +252,93 @@ export function WidgetComponent({
               <div className={`${textSize} min-w-0`}>
                 <div className="font-medium truncate">Appointment Reminder</div>
                 <div className="text-muted-foreground truncate">Tomorrow at 2:00 PM</div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'billing_overview':
+        return (
+          <div className={`${spacing} min-w-0`}>
+            <div className="flex items-center justify-between">
+              <span className={`${titleSize} font-bold text-green-600`}>$2,450</span>
+              <Receipt className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-green-600 flex-shrink-0`} />
+            </div>
+            <div className={`space-y-1 ${textSize} min-w-0`}>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Paid</span>
+                <span className="text-green-600 ml-2 truncate">$1,850</span>
+              </div>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Pending</span>
+                <span className="text-orange-600 ml-2 truncate">$600</span>
+              </div>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Overdue</span>
+                <span className="text-red-600 ml-2 truncate">$0</span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'payment_tracker':
+        return (
+          <div className={`${spacing} min-w-0`}>
+            <div className="flex items-center justify-between">
+              <span className={`${titleSize} font-bold text-blue-600`}>85%</span>
+              <CreditCard className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-blue-600 flex-shrink-0`} />
+            </div>
+            <div className={`space-y-1 ${textSize} min-w-0`}>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">This Month</span>
+                <span className="text-blue-600 ml-2 truncate">$3,200</span>
+              </div>
+              <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2 mt-2">
+                <div className="bg-blue-600 h-2 rounded-full" style={{ width: '85%' }}></div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'insurance_claims':
+        return (
+          <div className={`${spacing} min-w-0`}>
+            <div className="flex items-center justify-between">
+              <span className={`${titleSize} font-bold text-purple-600`}>12</span>
+              <Building2 className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-purple-600 flex-shrink-0`} />
+            </div>
+            <div className={`space-y-1 ${textSize} min-w-0`}>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Approved</span>
+                <span className="text-green-600 ml-2 truncate">8</span>
+              </div>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Pending</span>
+                <span className="text-orange-600 ml-2 truncate">3</span>
+              </div>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Denied</span>
+                <span className="text-red-600 ml-2 truncate">1</span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'financial_summary':
+        return (
+          <div className={`${spacing} min-w-0`}>
+            <div className="flex items-center justify-between">
+              <span className={`${titleSize} font-bold text-emerald-600`}>+12%</span>
+              <DollarSign className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-emerald-600 flex-shrink-0`} />
+            </div>
+            <div className={`space-y-1 ${textSize} min-w-0`}>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">Revenue</span>
+                <span className="text-emerald-600 ml-2 truncate">$45,230</span>
+              </div>
+              <div className="flex justify-between items-center min-w-0">
+                <span className="text-muted-foreground flex-shrink-0">vs Last Month</span>
+                <span className="text-emerald-600 ml-2 truncate">↑ $4,820</span>
               </div>
             </div>
           </div>

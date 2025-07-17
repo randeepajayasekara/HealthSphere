@@ -44,7 +44,7 @@ export default function SocialLinksFooter() {
             key={link.id}
             href={link.href}
             aria-label={link.name}
-            className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+            className="w-8 h-8 bg-zinc-200 dark:bg-zinc-700 rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
           >
             <svg
               className="w-4 h-4"

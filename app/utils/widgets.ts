@@ -16,7 +16,11 @@ export type WidgetType =
   | 'telemedicine' 
   | 'ai_assistant'
   | 'lab_results'
-  | 'medication_reminders';
+  | 'medication_reminders'
+  | 'billing_overview'
+  | 'payment_tracker'
+  | 'insurance_claims'
+  | 'financial_summary';
 
 export interface WidgetConfig {
   id: string;
@@ -279,6 +283,79 @@ export const DEFAULT_WIDGET_CONFIGS: Record<WidgetType, Omit<WidgetConfig, 'id' 
       showUpcoming: true,
       showMissed: true,
       reminderWindow: 30 // minutes
+    }
+  },
+  billing_overview: {
+    type: 'billing_overview',
+    title: 'Billing Overview',
+    description: 'View your bills and payment status',
+    icon: 'Receipt',
+    size: 'medium',
+    position: { x: 0, y: 2, w: 2, h: 2 },
+    isVisible: true,
+    isResizable: true,
+    isDraggable: true,
+    minSize: { w: 2, h: 2 },
+    refreshInterval: 300000, // 5 minutes
+    settings: {
+      showOutstanding: true,
+      showRecent: true,
+      maxItems: 5
+    }
+  },
+  payment_tracker: {
+    type: 'payment_tracker',
+    title: 'Payment Tracker',
+    description: 'Track payment history and due dates',
+    icon: 'CreditCard',
+    size: 'medium',
+    position: { x: 2, y: 2, w: 2, h: 2 },
+    isVisible: true,
+    isResizable: true,
+    isDraggable: true,
+    minSize: { w: 2, h: 2 },
+    refreshInterval: 600000, // 10 minutes
+    settings: {
+      showUpcoming: true,
+      showHistory: true,
+      maxItems: 5
+    }
+  },
+  insurance_claims: {
+    type: 'insurance_claims',
+    title: 'Insurance Claims',
+    description: 'Monitor insurance claims and coverage',
+    icon: 'Building2',
+    size: 'medium',
+    position: { x: 4, y: 2, w: 2, h: 2 },
+    isVisible: true,
+    isResizable: true,
+    isDraggable: true,
+    minSize: { w: 2, h: 2 },
+    refreshInterval: 900000, // 15 minutes
+    settings: {
+      showPending: true,
+      showApproved: true,
+      maxItems: 5
+    }
+  },
+  financial_summary: {
+    type: 'financial_summary',
+    title: 'Financial Summary',
+    description: 'Complete healthcare expense overview',
+    icon: 'DollarSign',
+    size: 'large',
+    position: { x: 0, y: 4, w: 3, h: 2 },
+    isVisible: true,
+    isResizable: true,
+    isDraggable: true,
+    minSize: { w: 3, h: 2 },
+    refreshInterval: 1800000, // 30 minutes
+    settings: {
+      showTrends: true,
+      showBreakdown: true,
+      includeInsurance: true,
+      timeRange: '12months'
     }
   }
 };

@@ -88,6 +88,86 @@ export const authRoutes: Route[] = [
     },
 ];
 
+// Doctor role specific routes
+export const doctorRoutes: DoctorRoute[] = [
+    {
+        path: '/doctor',
+        name: 'Dashboard',
+        description: 'Doctor dashboard overview',
+        role: 'doctor',
+        icon: 'LayoutDashboard'
+    },
+    {
+        path: '/doctor/patients',
+        name: 'My Patients',
+        description: 'Manage patient roster and medical records',
+        role: 'doctor',
+        icon: 'Users'
+    },
+    {
+        path: '/doctor/appointments',
+        name: 'Appointments',
+        description: 'Schedule and manage appointments',
+        role: 'doctor',
+        icon: 'Calendar'
+    },
+    {
+        path: '/doctor/consultations',
+        name: 'Consultations',
+        description: 'Active and scheduled consultations',
+        role: 'doctor',
+        icon: 'Stethoscope'
+    },
+    {
+        path: '/doctor/prescriptions',
+        name: 'Prescriptions',
+        description: 'Manage and track prescriptions',
+        role: 'doctor',
+        icon: 'Pill'
+    },
+    {
+        path: '/doctor/lab-results',
+        name: 'Lab Results',
+        description: 'Review and analyze patient lab results',
+        role: 'doctor',
+        icon: 'FlaskConical'
+    },
+    {
+        path: '/doctor/medical-records',
+        name: 'Medical Records',
+        description: 'Patient medical history and documentation',
+        role: 'doctor',
+        icon: 'FileText'
+    },
+    {
+        path: '/doctor/telemedicine',
+        name: 'Telemedicine',
+        description: 'Virtual consultations and remote care',
+        role: 'doctor',
+        icon: 'Video'
+    },
+    {
+        path: '/doctor/schedule',
+        name: 'My Schedule',
+        description: 'Personal schedule and availability',
+        role: 'doctor',
+        icon: 'Clock'
+    },
+    {
+        path: '/doctor/analytics',
+        name: 'Analytics',
+        description: 'Patient outcomes and performance metrics',
+        role: 'doctor',
+        icon: 'BarChart3'
+    }
+];
+
+// Enhanced route interface for role-based access
+export interface DoctorRoute extends DashboardRoute {
+    role: 'doctor';
+    icon?: string;
+}
+
 // Dashboard routes for each user role
 export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
     patient: [
@@ -162,7 +242,7 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
             ],
         },
         {
-            path: '/profile',
+            path: '/dashboard/profile',
             name: 'Profile',
             description: 'Manage your profile',
             icon: 'user',
@@ -700,6 +780,60 @@ export const dashboardRoutes: Record<UserRole, RouteWithChildren[]> = {
         },
     ],
 };
+
+// UMID specific routes
+export const umidRoutes: RouteWithChildren[] = [
+    {
+        path: '/umid',
+        name: 'Universal Medical ID',
+        description: 'Access and manage Universal Medical ID system',
+        icon: 'IdCard',
+        protected: true,
+        roles: ['patient', 'doctor', 'nurse', 'admin', 'hospital_management', 'lab_technician'],
+        children: [
+            {
+                path: '/umid/access',
+                name: 'Access UMID',
+                description: 'Access patient medical information via UMID',
+                icon: 'Scan',
+                protected: true,
+                roles: ['doctor', 'nurse', 'admin', 'hospital_management', 'lab_technician'],
+            },
+            {
+                path: '/umid/generate',
+                name: 'Generate UMID',
+                description: 'Generate new Universal Medical ID for patient',
+                icon: 'QrCode',
+                protected: true,
+                roles: ['admin', 'hospital_management'],
+            },
+            {
+                path: '/umid/manage',
+                name: 'Manage UMID',
+                description: 'Manage existing Universal Medical IDs',
+                icon: 'Settings',
+                protected: true,
+                roles: ['admin', 'hospital_management'],
+            },
+            {
+                path: '/umid/audit',
+                name: 'Access Audit',
+                description: 'View UMID access logs and audit trail',
+                icon: 'History',
+                protected: true,
+                roles: ['admin', 'hospital_management'],
+            },
+            {
+                path: '/umid/emergency',
+                name: 'Emergency Access',
+                description: 'Emergency access to critical medical information',
+                icon: 'AlertTriangle',
+                protected: true,
+                roles: ['doctor', 'nurse', 'admin'],
+            },
+        ],
+    },
+];
 
 // Utility function to get routes based on user role
 export const getRoutesByRole = (role: UserRole): RouteWithChildren[] => {

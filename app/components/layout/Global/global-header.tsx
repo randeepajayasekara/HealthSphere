@@ -52,7 +52,7 @@ export default function GlobalHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+      className={`sticky top-0 z-50 w-full bg-white dark:bg-black transition-all duration-500  ${
         isScrolled
           ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md shadow-sm py-3"
           : "bg-transparent py-5"
@@ -157,7 +157,7 @@ export default function GlobalHeader() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="ml-2">
+              <Button size="sm" className="ml-2 text-white">
                 Register
               </Button>
             </Link>
