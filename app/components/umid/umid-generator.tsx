@@ -782,7 +782,7 @@ export default function UMIDGenerator({ onGenerated, initialPatientId }: UMIDGen
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600 dark:text-gray-400">Issue Date:</span>
-                                        <span>{generatedUMID.issueDate.toLocaleDateString()}</span>
+                                        <span>{generatedUMID.issueDate ? generatedUMID.issueDate.toLocaleDateString() : 'N/A'}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600 dark:text-gray-400">Status:</span>

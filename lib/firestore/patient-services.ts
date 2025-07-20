@@ -20,6 +20,7 @@ import {
   QueryDocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '@/backend/config';
+import { safeTimestampToDate } from '../utils/date-utils';
 import { 
   Appointment, 
   Prescription, 
@@ -430,12 +431,12 @@ export const doctorService = {
         return {
           id: docSnap.id,
           ...docSnap.data(),
-          createdAt: docSnap.data().createdAt?.toDate(),
-          updatedAt: docSnap.data().updatedAt?.toDate(),
-          lastLogin: docSnap.data().lastLogin?.toDate(),
-          dateOfBirth: docSnap.data().dateOfBirth?.toDate(),
-          passwordLastChanged: docSnap.data().passwordLastChanged?.toDate(),
-          lastFailedLogin: docSnap.data().lastFailedLogin?.toDate()
+          createdAt: safeTimestampToDate(docSnap.data().createdAt, new Date()) as Date,
+          updatedAt: safeTimestampToDate(docSnap.data().updatedAt, new Date()) as Date,
+          lastLogin: safeTimestampToDate(docSnap.data().lastLogin, null),
+          dateOfBirth: safeTimestampToDate(docSnap.data().dateOfBirth, null),
+          passwordLastChanged: safeTimestampToDate(docSnap.data().passwordLastChanged, null),
+          lastFailedLogin: safeTimestampToDate(docSnap.data().lastFailedLogin, null)
         } as User;
       }
       
@@ -459,12 +460,12 @@ export const doctorService = {
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-        lastLogin: doc.data().lastLogin?.toDate(),
-        dateOfBirth: doc.data().dateOfBirth?.toDate(),
-        passwordLastChanged: doc.data().passwordLastChanged?.toDate(),
-        lastFailedLogin: doc.data().lastFailedLogin?.toDate()
+        createdAt: safeTimestampToDate(doc.data().createdAt, new Date()) as Date,
+        updatedAt: safeTimestampToDate(doc.data().updatedAt, new Date()) as Date,
+        lastLogin: safeTimestampToDate(doc.data().lastLogin, null),
+        dateOfBirth: safeTimestampToDate(doc.data().dateOfBirth, null),
+        passwordLastChanged: safeTimestampToDate(doc.data().passwordLastChanged, null),
+        lastFailedLogin: safeTimestampToDate(doc.data().lastFailedLogin, null)
       })) as User[];
     } catch (error) {
       console.error('Error fetching available doctors:', error);

@@ -359,7 +359,7 @@ export default function UMIDAccessScanner({
                                 </Badge>
                                 <div className="flex items-center space-x-1">
                                     <Clock className="w-4 h-4" />
-                                    <span>Expires: {accessResult.expiresAt.toLocaleTimeString()}</span>
+                                    <span>Expires: {accessResult.expiresAt ? accessResult.expiresAt.toLocaleTimeString() : 'N/A'}</span>
                                 </div>
                             </div>
                         )}
@@ -387,7 +387,7 @@ function MedicalDataDisplay({ medicalData }: { medicalData: LinkedMedicalData })
                         <div>
                             <p className="font-semibold text-lg">{medicalData.basicInfo.name}</p>
                             <p className="text-gray-600 dark:text-gray-400">
-                                DOB: {medicalData.basicInfo.dateOfBirth.toLocaleDateString()}
+                                DOB: {medicalData.basicInfo.dateOfBirth ? medicalData.basicInfo.dateOfBirth.toLocaleDateString() : 'N/A'}
                             </p>
                             {medicalData.basicInfo.bloodType && (
                                 <p className="text-gray-600 dark:text-gray-400">

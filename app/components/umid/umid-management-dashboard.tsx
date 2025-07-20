@@ -41,6 +41,7 @@ import {
     XCircle
 } from 'lucide-react';
 import { UMIDService, UMIDQueryService } from '@/lib/firestore/umid-services';
+import { safeToLocaleDateString } from '@/lib/utils/date-utils';
 import { 
     UniversalMedicalID,
     UMIDAccessLog,
@@ -305,11 +306,11 @@ export default function UMIDManagementDashboard({
                                                         {umid.linkedMedicalData.basicInfo.name}
                                                     </TableCell>
                                                     <TableCell>
-                                                        {umid.issueDate.toLocaleDateString()}
+                                                        {safeToLocaleDateString(umid.issueDate)}
                                                     </TableCell>
                                                     <TableCell>
                                                         {umid.lastAccessDate 
-                                                            ? umid.lastAccessDate.toLocaleDateString()
+                                                            ? safeToLocaleDateString(umid.lastAccessDate)
                                                             : 'Never'
                                                         }
                                                     </TableCell>

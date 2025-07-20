@@ -32,6 +32,7 @@ import {
     UMIDSecuritySettings,
     MedicalAlert
 } from '../../app/types';
+import { safeTimestampToDate } from '../utils/date-utils';
 
 // Collection references
 const UMID_COLLECTION = 'universal_medical_ids';
@@ -202,11 +203,14 @@ export class UMIDService {
             }
 
             const snapshot = await getDocs(q);
-            const logs = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                accessTime: doc.data().accessTime.toDate()
-            })) as UMIDAccessLog[];
+            const logs = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    accessTime: safeTimestampToDate(data.accessTime, new Date()) as Date
+                };
+            }) as UMIDAccessLog[];
 
             const lastDocument = snapshot.docs[snapshot.docs.length - 1];
 
@@ -362,11 +366,12 @@ export class UMIDService {
             }
 
             const doc = snapshot.docs[0];
+            const data = doc.data();
             return {
                 id: doc.id,
-                ...doc.data(),
-                issueDate: doc.data().issueDate.toDate(),
-                lastAccessDate: doc.data().lastAccessDate?.toDate()
+                ...data,
+                issueDate: safeTimestampToDate(data.issueDate, new Date()) as Date,
+                lastAccessDate: safeTimestampToDate(data.lastAccessDate, null)
             } as UniversalMedicalID;
         } catch (error) {
             console.error('Error fetching UMID by number:', error);
@@ -431,12 +436,15 @@ export class UMIDQueryService {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                issueDate: doc.data().issueDate.toDate(),
-                lastAccessDate: doc.data().lastAccessDate?.toDate()
-            })) as UniversalMedicalID[];
+            return snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    issueDate: safeTimestampToDate(data.issueDate, new Date()) as Date,
+                    lastAccessDate: safeTimestampToDate(data.lastAccessDate, null)
+                };
+            }) as UniversalMedicalID[];
         } catch (error) {
             console.error('Error fetching patient UMIDs:', error);
             throw new Error('Failed to fetch patient UMIDs');
@@ -469,12 +477,15 @@ export class UMIDQueryService {
             }
 
             const snapshot = await getDocs(q);
-            const umids = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                issueDate: doc.data().issueDate.toDate(),
-                lastAccessDate: doc.data().lastAccessDate?.toDate()
-            })) as UniversalMedicalID[];
+            const umids = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    issueDate: safeTimestampToDate(data.issueDate, new Date()) as Date,
+                    lastAccessDate: safeTimestampToDate(data.lastAccessDate, null)
+                };
+            }) as UniversalMedicalID[];
 
             const lastDocument = snapshot.docs[snapshot.docs.length - 1];
 
@@ -499,12 +510,15 @@ export class UMIDQueryService {
             );
 
             const snapshot = await getDocs(umidQuery);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                issueDate: doc.data().issueDate.toDate(),
-                lastAccessDate: doc.data().lastAccessDate?.toDate()
-            })) as UniversalMedicalID[];
+            return snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    issueDate: safeTimestampToDate(data.issueDate, new Date()) as Date,
+                    lastAccessDate: safeTimestampToDate(data.lastAccessDate, null)
+                };
+            }) as UniversalMedicalID[];
         } catch (error) {
             console.error('Error searching UMIDs:', error);
             throw new Error('Failed to search UMIDs');

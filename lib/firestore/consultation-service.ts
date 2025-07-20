@@ -26,6 +26,7 @@ import {
     QuerySnapshot
 } from 'firebase/firestore';
 import { db } from '@/backend/config';
+import { safeTimestampToDate } from '../utils/date-utils';
 import { 
     Consultation,
     ConsultationTemplate,
@@ -346,10 +347,10 @@ export class ConsultationService {
             const patient = {
                 id: patientDoc.id,
                 ...patientData,
-                dateOfBirth: patientData.dateOfBirth?.toDate(),
-                lastLogin: patientData.lastLogin?.toDate(),
-                createdAt: patientData.createdAt?.toDate() || new Date(),
-                updatedAt: patientData.updatedAt?.toDate() || new Date()
+                dateOfBirth: safeTimestampToDate(patientData.dateOfBirth, null),
+                lastLogin: safeTimestampToDate(patientData.lastLogin, null),
+                createdAt: safeTimestampToDate(patientData.createdAt, new Date()) as Date,
+                updatedAt: safeTimestampToDate(patientData.updatedAt, new Date()) as Date
             } as PatientProfile;
 
             return {

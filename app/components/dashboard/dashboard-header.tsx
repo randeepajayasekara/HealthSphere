@@ -281,7 +281,7 @@ export function DashboardHeader({ user, umid, isLoading }: DashboardHeaderProps)
                 </div>
                 <div>
                   <span className="text-muted-foreground">Issued:</span>
-                  <p className="font-medium">{umid.issueDate.toLocaleDateString()}</p>
+                  <p className="font-medium">{umid.issueDate ? umid.issueDate.toLocaleDateString() : 'N/A'}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Last Access:</span>

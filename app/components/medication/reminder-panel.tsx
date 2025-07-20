@@ -258,10 +258,10 @@ function ReminderCard({
                 {reminder.reminderText || 'Take medication'}
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Scheduled: {reminder.scheduledTime.toLocaleTimeString([], { 
+                Scheduled: {reminder.scheduledTime ? reminder.scheduledTime.toLocaleTimeString([], { 
                   hour: '2-digit', 
                   minute: '2-digit' 
-                })}
+                }) : 'N/A'}
               </p>
               <Badge variant="outline" className="mt-2">
                 {timeText}
