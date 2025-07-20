@@ -3,7 +3,7 @@ import { RegisterForm } from "@/app/components/layout/Auth/register-form";
 
 export default function LoginPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-1">
+    <div className="grid min-h-svh lg:grid-cols-1 dark:bg-[url('https://i.postimg.cc/QxH1gDTn/abstract-design-background-2705.jpg')] bg-no-repeat bg-cover">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="/" className="flex items-center gap-2 font-medium">
