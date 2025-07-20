@@ -27,11 +27,13 @@ import {
   BarChart3,
   Heart,
   Brain,
-  RefreshCw
+  RefreshCw,
+  Database
 } from 'lucide-react';
 import { DoctorService, type DoctorAnalytics } from '@/lib/firestore/doctor-service';
 import { useAuth } from '@/app/contexts/auth-context';
 import { Appointment, PatientProfile, Notification } from '@/app/types';
+import DoctorDataSeedingButton from '@/app/components/admin/doctor-data-seeding-button';
 
 interface DashboardStats {
   todayAppointments: number;
@@ -497,6 +499,22 @@ export default function DoctorDashboard() {
               </CardContent>
             </Card>
           </div>
+          
+          {/* Data Seeding Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Database className="h-5 w-5 mr-2 text-red-600" />
+                Development Tools
+              </CardTitle>
+              <CardDescription>
+                Tools for testing and development
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DoctorDataSeedingButton />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
