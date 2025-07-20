@@ -62,56 +62,56 @@ const footerSections: FooterSection[] = [
   {
     title: "Features",
     links: [
-      { title: "Universal Medical ID", href: "/umid", icon: QrCode },
-      { title: "AI Health Assistant", href: "/health-assistant", icon: Brain },
+      { title: "Universal Medical ID", href: "/dashboard/umid", icon: QrCode },
+      { title: "AI Health Assistant", href: "/dashboard/health-assistant", icon: Brain },
       { title: "Doctor Portal", href: "/doctor", icon: Stethoscope },
-      { title: "Appointments", href: "/appointments", icon: Calendar },
-      { title: "Medical Records", href: "/medical-records", icon: FileText },
-      { title: "Emergency Access", href: "/emergency", icon: Heart },
+      { title: "Appointments", href: "/dashboard/appointments", icon: Calendar },
+      { title: "Medical Records", href: "/dashboard/medical-records", icon: FileText },
+      { title: "Telemedicine", href: "/dashboard/telemedicine", icon: Heart },
     ]
   },
   {
     title: "Platform",
     links: [
       { title: "Dashboard", href: "/dashboard" },
-      { title: "Analytics", href: "/analytics" },
-      { title: "Integrations", href: "/integrations" },
-      { title: "API Documentation", href: "/api-docs" },
-      { title: "Mobile App", href: "/mobile" },
-      { title: "System Status", href: "/status" },
+      { title: "Doctor Analytics", href: "/doctor/analytics" },
+      { title: "Lab Results", href: "/dashboard/lab-results" },
+      { title: "Virtual Waiting Room", href: "/doctor/virtual-waiting-room" },
+      { title: "Prescriptions", href: "/dashboard/prescriptions" },
+      { title: "Medication Schedule", href: "/dashboard/medication-schedule" },
     ]
   },
   {
     title: "Company",
     links: [
-      { title: "About Us", href: "/about" },
-      { title: "Careers", href: "/careers" },
+      { title: "User Guide", href: "/guide" },
       { title: "Blog", href: "/blog" },
-      { title: "Press Kit", href: "/press" },
       { title: "Contact", href: "/contact" },
-      { title: "Partners", href: "/partners" },
+      { title: "Privacy Policy", href: "/privacy" },
+      { title: "Terms of Service", href: "/terms" },
+      { title: "Accessibility", href: "/accessibility" },
     ]
   },
   {
     title: "Support",
     links: [
-      { title: "Help Center", href: "/help" },
-      { title: "Documentation", href: "/docs" },
-      { title: "Community", href: "/community" },
-      { title: "Training", href: "/training" },
-      { title: "Status Page", href: "/status" },
-      { title: "Contact Support", href: "/support" },
+      { title: "Contact Support", href: "/contact" },
+      { title: "User Guide", href: "/guide" },
+      { title: "Privacy Policy", href: "/privacy" },
+      { title: "Cookie Policy", href: "/cookies" },
+      { title: "Terms of Service", href: "/terms" },
+      { title: "Accessibility", href: "/accessibility" },
     ]
   }
 ];
 
 const socialLinks = [
-  { name: "Facebook", href: "https://facebook.com/healthsphere", icon: Facebook },
-  { name: "Twitter", href: "https://twitter.com/healthsphere", icon: Twitter },
-  { name: "Instagram", href: "https://instagram.com/healthsphere", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/company/healthsphere", icon: Linkedin },
-  { name: "YouTube", href: "https://youtube.com/healthsphere", icon: Youtube },
-  { name: "GitHub", href: "https://github.com/healthsphere", icon: Github },
+  { name: "Facebook", href: "#", icon: Facebook },
+  { name: "Twitter", href: "#", icon: Twitter },
+  { name: "Instagram", href: "#", icon: Instagram },
+  { name: "LinkedIn", href: "#", icon: Linkedin },
+  { name: "YouTube", href: "https://www.youtube.com/@quarista_official", icon: Youtube },
+  { name: "GitHub", href: "https://github.com/Quarista", icon: Github },
 ];
 
 export default function GlobalFooter() {
