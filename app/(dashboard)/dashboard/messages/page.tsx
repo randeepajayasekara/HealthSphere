@@ -90,7 +90,7 @@ const MessagesPage = () => {
     {
       id: 'conv-1',
       participantIds: ['user-1', 'user-2'],
-      title: 'Patient Consultation - John Doe',
+      title: 'Thanks for using Healthsphere!',
       lastMessageAt: new Date(),
       createdAt: new Date(),
       isGroupConversation: false,
@@ -98,60 +98,18 @@ const MessagesPage = () => {
         id: 'msg-1',
         conversationId: 'conv-1',
         senderId: 'user-2',
-        content: 'Thank you for the consultation. When should I schedule the follow-up?',
+        content: 'Thank you for using Healthsphere! We hope you find it helpful.',
         createdAt: new Date(),
         isRead: false,
         isDeleted: false
       },
-      unreadCount: 2,
+      unreadCount: 1,
       participants: [
         {
           id: 'user-2',
           email: 'john.doe@email.com',
-          firstName: 'John',
-          lastName: 'Doe',
-          role: 'patient',
-          isActive: true,
-          isEmailVerified: true,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      ]
-    },
-    {
-      id: 'conv-2',
-      participantIds: ['user-1', 'user-3', 'user-4'],
-      title: 'Emergency Response Team',
-      lastMessageAt: new Date(Date.now() - 3600000),
-      createdAt: new Date(),
-      isGroupConversation: true,
-      lastMessage: {
-        id: 'msg-2',
-        conversationId: 'conv-2',
-        senderId: 'user-3',
-        content: 'Patient in room 302 requires immediate attention',
-        createdAt: new Date(Date.now() - 3600000),
-        isRead: true,
-        isDeleted: false
-      },
-      unreadCount: 0,
-      participants: [
-        {
-          id: 'user-3',
-          email: 'nurse.smith@healthsphere.com',
-          firstName: 'Nurse',
-          lastName: 'Smith',
-          role: 'nurse',
-          isActive: true,
-          isEmailVerified: true,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        {
-          id: 'user-4',
-          email: 'admin@healthsphere.com',
-          firstName: 'Admin',
-          lastName: 'Wilson',
+          firstName: 'Health',
+          lastName: 'Sphere',
           role: 'admin',
           isActive: true,
           isEmailVerified: true,
@@ -159,7 +117,7 @@ const MessagesPage = () => {
           updatedAt: new Date()
         }
       ]
-    }
+    },
   ];
 
   const mockMessages: MessageWithSender[] = [
@@ -167,8 +125,8 @@ const MessagesPage = () => {
       id: 'msg-1',
       conversationId: 'conv-1',
       senderId: 'user-1',
-      content: 'Hello John, I hope you\'re feeling better after our consultation yesterday. Please remember to take your medication as prescribed.',
-      createdAt: new Date(Date.now() - 7200000),
+      content: 'Hi',
+      createdAt: new Date(Date.now() - 3),
       isRead: true,
       isDeleted: false,
       sender: currentUser
@@ -177,8 +135,8 @@ const MessagesPage = () => {
       id: 'msg-2',
       conversationId: 'conv-1',
       senderId: 'user-2',
-      content: 'Thank you Dr. Johnson. I\'ve been taking the medication as prescribed. The pain has reduced significantly.',
-      createdAt: new Date(Date.now() - 3600000),
+      content: 'Thank you for using Healthsphere! We hope you find it helpful.',
+      createdAt: new Date(Date.now() - 1),
       isRead: true,
       isDeleted: false,
       sender: mockConversations[0].participants![0]
@@ -187,7 +145,7 @@ const MessagesPage = () => {
       id: 'msg-3',
       conversationId: 'conv-1',
       senderId: 'user-2',
-      content: 'Thank you for the consultation. When should I schedule the follow-up?',
+      content: 'Welcome to HealthSphere! How can we assist you today?',
       createdAt: new Date(),
       isRead: false,
       isDeleted: false,
