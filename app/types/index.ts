@@ -518,6 +518,233 @@ export interface AppointmentAlternative {
 }
 
 // -----------------------------------------------------------------------------
+// Consultation related types
+// -----------------------------------------------------------------------------
+
+export type ConsultationStatus = 
+    | 'scheduled' 
+    | 'waiting' 
+    | 'in_progress' 
+    | 'completed' 
+    | 'cancelled' 
+    | 'no_show' 
+    | 'paused' 
+    | 'follow_up_required';
+
+export type ConsultationType = 
+    | 'general_consultation' 
+    | 'follow_up' 
+    | 'emergency' 
+    | 'specialist_consultation' 
+    | 'second_opinion' 
+    | 'telemedicine' 
+    | 'pre_operative' 
+    | 'post_operative' 
+    | 'medication_review' 
+    | 'lab_review' 
+    | 'routine_checkup';
+
+export type ConsultationPriority = 'low' | 'medium' | 'high' | 'urgent' | 'emergency';
+
+export interface Consultation {
+    id: string;
+    patientId: string;
+    doctorId: string;
+    appointmentId?: string; // Optional link to appointment
+    date: Date;
+    startTime: string; // Format: "HH:MM"
+    endTime?: string; // Format: "HH:MM" - set when consultation starts
+    actualStartTime?: Date; // Actual start timestamp
+    actualEndTime?: Date; // Actual end timestamp
+    status: ConsultationStatus;
+    type: ConsultationType;
+    priority: ConsultationPriority;
+    reason: string;
+    symptoms?: string[];
+    chiefComplaint?: string;
+    
+    // Consultation details
+    presentingSymptoms?: string;
+    historyOfPresentIllness?: string;
+    physicalExamination?: string;
+    assessment?: string;
+    diagnosis?: string[];
+    differentialDiagnosis?: string[];
+    treatmentPlan?: string;
+    followUpInstructions?: string;
+    
+    // Vitals and measurements
+    vitals?: {
+        temperature?: number; // Celsius
+        bloodPressure?: {
+            systolic: number;
+            diastolic: number;
+        };
+        heartRate?: number; // BPM
+        respiratoryRate?: number; // Per minute
+        oxygenSaturation?: number; // Percentage
+        weight?: number; // kg
+        height?: number; // cm
+        bmi?: number;
+        notes?: string;
+    };
+    
+    // Prescriptions and orders
+    prescriptions?: {
+        medicationId: string;
+        medicationName: string;
+        dosage: string;
+        frequency: string;
+        duration: string;
+        instructions?: string;
+    }[];
+    
+    labOrders?: {
+        testId: string;
+        testName: string;
+        priority: 'routine' | 'urgent' | 'stat';
+        instructions?: string;
+    }[];
+    
+    imagingOrders?: {
+        type: string;
+        bodyPart: string;
+        priority: 'routine' | 'urgent' | 'stat';
+        instructions?: string;
+    }[];
+    
+    // Referrals
+    referrals?: {
+        specialistId?: string;
+        specialistName?: string;
+        specialty: string;
+        reason: string;
+        priority: 'routine' | 'urgent';
+        notes?: string;
+    }[];
+    
+    // Follow-up
+    followUpNeeded?: boolean;
+    followUpDate?: Date;
+    followUpReason?: string;
+    
+    // Notes and attachments
+    notes?: string;
+    doctorNotes?: string;
+    attachments?: {
+        id: string;
+        name: string;
+        type: string;
+        url: string;
+        uploadedAt: Date;
+    }[];
+    
+    // Virtual consultation details
+    virtualMeeting?: VirtualMeetingInfo;
+    
+    // Billing and insurance
+    billable?: boolean;
+    billingCode?: string;
+    insuranceClaimId?: string;
+    
+    // Metadata
+    createdAt: Date;
+    updatedAt: Date;
+    createdBy: string;
+    updatedBy: string;
+    duration?: number; // Minutes
+    
+    // Quality metrics
+    patientSatisfaction?: {
+        rating: number; // 1-5 scale
+        feedback?: string;
+        submittedAt: Date;
+    };
+    
+    // Emergency flags
+    isEmergency?: boolean;
+    emergencyLevel?: number; // 1-5 scale
+    alertFlags?: string[];
+}
+
+export interface ConsultationTemplate {
+    id: string;
+    name: string;
+    description: string;
+    specialty: string;
+    type: ConsultationType;
+    sections: {
+        name: string;
+        fields: {
+            name: string;
+            type: 'text' | 'textarea' | 'select' | 'checkbox' | 'number' | 'date';
+            required: boolean;
+            options?: string[];
+            placeholder?: string;
+        }[];
+    }[];
+    createdBy: string;
+    createdAt: Date;
+    isActive: boolean;
+}
+
+export interface ConsultationQueue {
+    id: string;
+    doctorId: string;
+    date: Date;
+    consultations: {
+        consultationId: string;
+        estimatedDuration: number; // Minutes
+        priority: ConsultationPriority;
+        status: ConsultationStatus;
+        patientName: string;
+        reason: string;
+        queuePosition: number;
+        estimatedStartTime: Date;
+        checkedInAt?: Date;
+        notes?: string;
+    }[];
+    totalEstimatedTime: number; // Minutes
+    currentConsultation?: string; // Consultation ID
+    lastUpdated: Date;
+}
+
+export interface ConsultationAnalytics {
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+    totalConsultations: number;
+    completedConsultations: number;
+    cancelledConsultations: number;
+    noShowConsultations: number;
+    averageDuration: number; // Minutes
+    averageWaitTime: number; // Minutes
+    consultationsByType: {
+        type: ConsultationType;
+        count: number;
+        averageDuration: number;
+    }[];
+    consultationsByPriority: {
+        priority: ConsultationPriority;
+        count: number;
+        averageDuration: number;
+    }[];
+    patientSatisfactionAverage: number;
+    peakHours: {
+        hour: number;
+        count: number;
+    }[];
+    diagnoses: {
+        diagnosis: string;
+        count: number;
+    }[];
+    followUpRate: number; // Percentage
+    prescriptionRate: number; // Percentage
+    referralRate: number; // Percentage
+}
+
+// -----------------------------------------------------------------------------
 // Prescription related types
 // -----------------------------------------------------------------------------
 
@@ -750,6 +977,82 @@ export interface TelemedicineNotification extends Notification {
     issue: 'technical_support_needed' | 'session_ready' | 'waiting_room_full' | 'equipment_check';
     platform?: string;
     urgency: 'low' | 'medium' | 'high' | 'critical';
+}
+
+// -----------------------------------------------------------------------------
+// Telemedicine Session types
+// -----------------------------------------------------------------------------
+
+export type TelemedicineSessionStatus = 
+    | 'scheduled' 
+    | 'waiting' 
+    | 'in_progress' 
+    | 'completed' 
+    | 'cancelled' 
+    | 'technical_issues' 
+    | 'no_show';
+
+export interface TelemedicineSession {
+    id: string;
+    doctorId: string;
+    patientId: string;
+    appointmentId?: string;
+    title: string;
+    description?: string;
+    scheduledTime: Date;
+    duration: number; // in minutes
+    status: TelemedicineSessionStatus;
+    virtualMeeting: VirtualMeetingInfo;
+    startTime?: Date;
+    endTime?: Date;
+    sessionNotes?: string;
+    prescriptionsIssued?: string[];
+    followUpRequired?: boolean;
+    followUpDate?: Date;
+    technicalIssues?: string[];
+    recordingEnabled?: boolean;
+    recordingUrl?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface TelemedicineSessionRequest {
+    doctorId: string;
+    patientId: string;
+    preferredDate: Date;
+    preferredTime: string;
+    duration: number;
+    reason: string;
+    urgency: 'low' | 'medium' | 'high' | 'urgent';
+    notes?: string;
+}
+
+export interface TelemedicineWaitingRoom {
+    sessionId: string;
+    patientId: string;
+    joinedAt: Date;
+    position: number;
+    estimatedWaitTime: number; // in minutes
+    technicalCheckCompleted: boolean;
+    connectionQuality: 'excellent' | 'good' | 'fair' | 'poor';
+}
+
+export interface TelemedicineAnalytics {
+    totalSessions: number;
+    completedSessions: number;
+    cancelledSessions: number;
+    technicalIssues: number;
+    averageSessionDuration: number;
+    patientSatisfactionRating: number;
+    connectionQualityStats: {
+        excellent: number;
+        good: number;
+        fair: number;
+        poor: number;
+    };
+    mostCommonIssues: string[];
+    periodStart: Date;
+    periodEnd: Date;
 }
 
 // -----------------------------------------------------------------------------

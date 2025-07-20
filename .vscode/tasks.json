@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "HealthSphere Virtual Waiting Room Development",
+			"type": "shell",
+			"command": "pnpm dev",
+			"group": "serve",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

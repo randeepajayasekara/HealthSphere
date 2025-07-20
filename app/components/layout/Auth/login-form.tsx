@@ -241,13 +241,13 @@ export function LoginForm({ className, ...props }: HTMLMotionProps<"div">) {
         </CardContent>
       </Card>
 
-      <div className="text-muted-foreground text-center text-xs text-balance">
+      <div className="text-white text-center text-xs text-balance">
         By signing in, you agree to our{" "}
-        <Link href="/terms" className="text-primary hover:underline">
+        <Link href="/terms" className="text-red-200 underline hover:underline">
           Terms of Service
         </Link>{" "}
         and{" "}
-        <Link href="/privacy" className="text-primary hover:underline">
+        <Link href="/privacy" className="text-red-200 underline hover:underline">
           Privacy Policy
         </Link>
         .

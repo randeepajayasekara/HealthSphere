@@ -102,24 +102,24 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
 
   return (
     <Card className="bg-gradient-to-r from-white to-emerald-50/50 dark:from-zinc-900 dark:to-emerald-950/20 border-zinc-200/60 dark:border-zinc-800/60 shadow-lg">
-      <CardContent className="p-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col items-center space-y-6">
           {/* Profile Image */}
-          <div className="relative group">
-            <Avatar className="w-24 h-24 sm:w-32 sm:h-32 ring-4 ring-emerald-100 dark:ring-emerald-900/30 shadow-lg">
+          <div className="relative group flex-shrink-0">
+            <Avatar className="w-20 h-20 sm:w-24 sm:h-24 ring-4 ring-emerald-100 dark:ring-emerald-900/30 shadow-lg">
               <AvatarImage 
                 src={user.profileImageUrl} 
                 alt={`${user.firstName} ${user.lastName}`}
                 className="object-cover"
               />
-              <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xl font-semibold">
+              <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-lg font-semibold">
                 {user.firstName[0]}{user.lastName[0]}
               </AvatarFallback>
             </Avatar>
             
             {/* Upload overlay */}
             <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center cursor-pointer">
-              <Camera className="w-6 h-6 text-white" />
+              <Camera className="w-5 h-5 text-white" />
             </div>
             
             {/* Hidden file input */}
@@ -136,16 +136,16 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
             {/* Loading overlay */}
             {isImageLoading && (
               <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               </div>
             )}
           </div>
 
           {/* Profile Info */}
-          <div className="flex-1 space-y-4">
+          <div className="w-full space-y-4 text-center">
             <div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+              <div className="flex flex-col items-center gap-2 mb-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 break-words">
                   {user.firstName} {user.lastName}
                 </h1>
                 <Badge className={cn("w-fit", roleInfo.color)}>
@@ -153,23 +153,23 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
                   {roleInfo.label}
                 </Badge>
               </div>
-              <p className="text-zinc-600 dark:text-zinc-400 text-lg">
+              <p className="text-zinc-600 dark:text-zinc-400 text-base">
                 {roleInfo.description}
               </p>
             </div>
 
             {/* Contact Information Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+            <div className="grid grid-cols-1 gap-3 max-w-md mx-auto">
+              <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 justify-center">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                   <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-sm font-medium">{user.email}</span>
+                <span className="text-sm font-medium break-all">{user.email}</span>
               </div>
 
               {user.phone && (
-                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                     <Phone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <span className="text-sm font-medium">{user.phone}</span>
@@ -177,8 +177,8 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
               )}
 
               {user.dateOfBirth && (
-                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                     <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <span className="text-sm font-medium">
@@ -188,8 +188,8 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
               )}
 
               {user.address && (
-                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                     <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <span className="text-sm font-medium">
@@ -200,7 +200,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
             </div>
 
             {/* Account Status */}
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 justify-center pt-2">
               {user.isEmailVerified && (
                 <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
                   <Shield className="w-3 h-3 mr-1" />
