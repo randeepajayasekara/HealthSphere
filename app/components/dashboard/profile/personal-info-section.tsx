@@ -23,6 +23,35 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
+/**
+ * Safely format a date using date-fns format function
+ * @param date - Date value to format
+ * @param formatString - Date format string
+ * @param fallback - Fallback string if date is invalid
+ * @returns Formatted date string or fallback
+ */
+function safeFormat(
+  date: Date | string | null | undefined,
+  formatString: string,
+  fallback: string = 'Not provided'
+): string {
+  try {
+    if (!date) return fallback;
+    
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return fallback;
+    }
+    
+    return format(dateObj, formatString);
+  } catch (error) {
+    console.warn('Date formatting error:', error);
+    return fallback;
+  }
+}
+
 interface PersonalInfoSectionProps {
   user: User;
 }
@@ -33,7 +62,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
   const [formData, setFormData] = useState({
     firstName: user.firstName || "",
     lastName: user.lastName || "",
-    dateOfBirth: user.dateOfBirth ? format(new Date(user.dateOfBirth), "yyyy-MM-dd") : "",
+    dateOfBirth: safeFormat(user.dateOfBirth, "yyyy-MM-dd", ""),
     gender: user.gender || "",
     phone: user.phone || "",
     address: {
@@ -89,7 +118,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
     setFormData({
       firstName: user.firstName || "",
       lastName: user.lastName || "",
-      dateOfBirth: user.dateOfBirth ? format(new Date(user.dateOfBirth), "yyyy-MM-dd") : "",
+      dateOfBirth: safeFormat(user.dateOfBirth, "yyyy-MM-dd", ""),
       gender: user.gender || "",
       phone: user.phone || "",
       address: {
@@ -207,7 +236,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                 />
               ) : (
                 <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
-                  {user.dateOfBirth ? format(new Date(user.dateOfBirth), "MMMM d, yyyy") : "Not provided"}
+                  {safeFormat(user.dateOfBirth, "MMMM d, yyyy", "Not provided")}
                 </div>
               )}
             </div>

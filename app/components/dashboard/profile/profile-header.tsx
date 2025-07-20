@@ -22,6 +22,36 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { safeToLocaleDateString, isValidDate } from "@/lib/utils/date-utils";
+
+/**
+ * Safely format a date using date-fns format function
+ * @param date - Date value to format
+ * @param formatString - Date format string
+ * @param fallback - Fallback string if date is invalid
+ * @returns Formatted date string or fallback
+ */
+function safeFormat(
+  date: Date | string | null | undefined,
+  formatString: string,
+  fallback: string = 'Not provided'
+): string {
+  try {
+    if (!date) return fallback;
+    
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return fallback;
+    }
+    
+    return format(dateObj, formatString);
+  } catch (error) {
+    console.warn('Date formatting error:', error);
+    return fallback;
+  }
+}
 
 interface ProfileHeaderProps {
   user: User;
@@ -182,7 +212,7 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
                     <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <span className="text-sm font-medium">
-                    {format(new Date(user.dateOfBirth), "MMMM d, yyyy")}
+                    {safeFormat(user.dateOfBirth, "MMMM d, yyyy", "Date not available")}
                   </span>
                 </div>
               )}

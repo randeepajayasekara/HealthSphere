@@ -28,6 +28,58 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+/**
+ * Safely format a date using date-fns format function
+ * @param date - Date value to format
+ * @param formatString - Date format string
+ * @param fallback - Fallback string if date is invalid
+ * @returns Formatted date string or fallback
+ */
+function safeFormat(
+  date: Date | string | null | undefined,
+  formatString: string,
+  fallback: string = 'N/A'
+): string {
+  try {
+    if (!date) return fallback;
+    
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return fallback;
+    }
+    
+    return format(dateObj, formatString);
+  } catch (error) {
+    console.warn('Date formatting error:', error);
+    return fallback;
+  }
+}
+
+/**
+ * Safely calculate days since a date
+ * @param date - Date value to calculate from
+ * @returns Number of days or 0 if invalid
+ */
+function safeDaysSince(date: Date | string | null | undefined): number {
+  try {
+    if (!date) return 0;
+    
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return 0;
+    }
+    
+    return Math.floor((Date.now() - dateObj.getTime()) / (1000 * 60 * 60 * 24));
+  } catch (error) {
+    console.warn('Date calculation error:', error);
+    return 0;
+  }
+}
+
 interface ActivitySectionProps {
   user: User;
 }
@@ -249,7 +301,7 @@ export function ActivitySection({ user }: ActivitySectionProps) {
             <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg">
               <Calendar className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
               <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
-                {user.createdAt ? Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) : 0}
+                {safeDaysSince(user.createdAt)}
               </div>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">Days Active</p>
             </div>
@@ -265,7 +317,7 @@ export function ActivitySection({ user }: ActivitySectionProps) {
             <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
               <Clock className="w-8 h-8 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
               <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                {user.lastLogin ? format(new Date(user.lastLogin), "MMM d") : "Never"}
+                {safeFormat(user.lastLogin, "MMM d", "Never")}
               </div>
               <p className="text-sm text-purple-700 dark:text-purple-300">Last Login</p>
             </div>
