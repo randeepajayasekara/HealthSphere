@@ -848,11 +848,11 @@ export function SidebarContent({
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="flex items-center gap-2">
                 {theme === 'dark' ? (
-                  <Moon className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <Moon className="w-4 h-4 text-zinc-900 hover:text-zinc-100 dark:text-zinc-100" />
                 ) : theme === 'light' ? (
-                  <Sun className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <Sun className="w-4 h-4 text-zinc-900 hover:text-zinc-100 dark:text-zinc-100" />
                 ) : (
-                  <Monitor className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                  <Monitor className="w-4 h-4 text-zinc-900 hover:text-zinc-100 dark:text-zinc-100" />
                 )}
                 <span>Theme</span>
               </DropdownMenuSubTrigger>
@@ -922,11 +922,11 @@ export function SidebarContent({
 
             {/* Logout */}
             <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer text-red-600 dark:text-red-400 focus:text-red-700 dark:focus:text-red-300"
+              className="flex items-center gap-2 cursor-pointer focus:text-red-700 dark:focus:text-red-300"
               onClick={logout}
             >
-              <LogOut className="w-4 h-4 text-red-400" />
-              <span>Logout</span>
+              <LogOut className="w-4 h-4 text-red-600 dark:text-red-400 hover:text-white dark:hover:text-white" />
+              <span className="text-red-600 dark:text-red-400 hover:text-red-100 dark:hover:text-red-100">Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
