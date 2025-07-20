@@ -317,7 +317,7 @@ export default function UtilityNavigation() {
           <Button
             variant="ghost"
             size="icon"
-            className="w-10 h-10 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="w-10 h-10 rounded-xl hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             <Bell className="w-5 h-5" />
           </Button>
@@ -333,7 +333,7 @@ export default function UtilityNavigation() {
           variant="ghost"
           size="icon"
           onClick={openAccessibilityPanel}
-          className="w-10 h-10 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="w-10 h-10 rounded-xl hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
         >
         <svg 
             id="Layer_1" 
@@ -353,7 +353,7 @@ export default function UtilityNavigation() {
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="w-10 h-10 rounded-xl hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <HelpCircle className="w-5 h-5" />
             </Button>
