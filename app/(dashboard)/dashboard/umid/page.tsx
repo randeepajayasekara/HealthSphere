@@ -1,6 +1,6 @@
 /**
  * HealthSphere - UMID Main Page
- * Universal Medical ID system main interface
+ * Universal Medical ID system main interface for patients
  */
 
 "use client";
@@ -14,9 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
     QrCode, 
     Shield, 
-    Scan, 
     Settings, 
-    Users, 
     Activity,
     AlertTriangle,
     Info,
@@ -24,36 +22,67 @@ import {
     Lock,
     Smartphone,
     Heart,
-    Clock
+    Clock,
+    Plus,
+    User
 } from 'lucide-react';
 
 // Import UMID components
-import UMIDAccessScanner from '@/app/components/umid/umid-access-scanner';
 import UMIDGenerator from '@/app/components/umid/umid-generator';
 import UMIDManagementDashboard from '@/app/components/umid/umid-management-dashboard';
+import UMIDStatsDisplay from '@/app/components/umid/umid-stats-display';
 
-// Mock user data - replace with actual auth context
-interface User {
-    id: string;
-    role: 'patient' | 'doctor' | 'nurse' | 'admin' | 'hospital_management';
-    name: string;
-    department?: string;
-}
+// Import authentication context and UMID hook
+import { useAuth } from '@/app/contexts/auth-context';
+import { useUMID } from '@/hooks/use-umid';
 
 export default function UMIDMainPage() {
     const [activeTab, setActiveTab] = useState('overview');
-    const [user, setUser] = useState<User>({
-        id: 'user123',
-        role: 'doctor',
-        name: 'Dr. John Smith',
-        department: 'Emergency Medicine'
-    });
+    const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+    const { umids, stats, isLoading: umidLoading, generateUMID, refreshData } = useUMID();
 
-    // Feature access based on user role
-    const canGenerate = ['admin', 'hospital_management'].includes(user.role);
-    const canAccess = ['doctor', 'nurse', 'admin', 'hospital_management', 'lab_technician'].includes(user.role);
-    const canManage = ['admin', 'hospital_management'].includes(user.role);
+    // Combined loading state
+    const isLoading = authLoading || umidLoading;
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900/20 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+                    <p className="text-gray-600 dark:text-gray-400">Loading UMID System...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Authentication check
+    if (!isAuthenticated || !user) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900/20 flex items-center justify-center">
+                <Card className="w-full max-w-md">
+                    <CardContent className="p-6 text-center space-y-4">
+                        <AlertTriangle className="w-12 h-12 text-amber-600 mx-auto" />
+                        <h2 className="text-xl font-semibold">Authentication Required</h2>
+                        <p className="text-gray-600 dark:text-gray-400">
+                            Please log in to access the Universal Medical ID system.
+                        </p>
+                        <Button onClick={() => window.location.href = '/login'}>
+                            Go to Login
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    // Patient role restrictions - patients can only generate and manage their own UMIDs
     const isPatient = user.role === 'patient';
+    const canGenerate = isPatient; // Patients can generate UMIDs for themselves
+    const canManage = isPatient; // Patients can manage their own UMIDs
+    
+    // Get user's full name
+    const userFullName = `${user.firstName} ${user.lastName}`;
 
     const FeatureCard = ({ 
         title, 
@@ -132,7 +161,7 @@ export default function UMIDMainPage() {
                     <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 rounded-full">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                            Logged in as <span className="font-medium">{user.name}</span> ({user.role})
+                            Logged in as <span className="font-medium">{userFullName}</span> ({user.role})
                         </span>
                     </div>
                 </div>
@@ -148,12 +177,12 @@ export default function UMIDMainPage() {
                                         UMID System Operational
                                     </p>
                                     <p className="text-sm text-green-600 dark:text-green-400">
-                                        All services running normally • Response time: 0.8s
+                                        {stats.totalUMIDs} UMIDs • {stats.activeUMIDs} Active • {stats.recentAccesses} Recent Accesses
                                     </p>
                                 </div>
                             </div>
                             <Badge variant="outline" className="text-green-700 border-green-300">
-                                99.9% Uptime
+                                {userFullName}
                             </Badge>
                         </div>
                     </CardContent>
@@ -161,139 +190,52 @@ export default function UMIDMainPage() {
 
                 {/* Quick Access Features */}
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-bold text-center">Quick Access</h2>
+                    <h2 className="text-2xl font-bold text-center">Your UMID Management</h2>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Show alert if user has no UMIDs */}
+                    {!isLoading && stats.totalUMIDs === 0 && (
+                        <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/10">
+                            <AlertTriangle className="w-4 h-4 text-amber-600" />
+                            <AlertDescription className="text-amber-800 dark:text-amber-200">
+                                <strong>No UMIDs Found:</strong> You haven't created any Universal Medical IDs yet. 
+                                Create your first UMID to ensure your medical information is accessible in emergencies.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FeatureCard
-                            title="Access UMID"
-                            description="Scan QR code or enter UMID to access patient information"
-                            icon={Scan}
-                            available={canAccess}
-                            onClick={() => setActiveTab('access')}
-                            badge="Scan"
-                        />
-                        
-                        <FeatureCard
-                            title="Generate UMID"
-                            description="Create new Universal Medical ID for patients"
-                            icon={QrCode}
+                            title="Generate My UMID"
+                            description="Create your personal Universal Medical ID with your medical information"
+                            icon={Plus}
                             available={canGenerate}
                             onClick={() => setActiveTab('generate')}
-                            badge="Create"
+                            badge="Create New"
                         />
                         
                         <FeatureCard
-                            title="Manage UMIDs"
-                            description="View, edit, and manage existing Universal Medical IDs"
+                            title="Manage My UMIDs"
+                            description="View, edit, and manage your existing Universal Medical IDs"
                             icon={Settings}
-                            available={canManage || isPatient}
+                            available={canManage}
                             onClick={() => setActiveTab('manage')}
-                            badge="Admin"
+                            badge="My UMIDs"
                         />
                     </div>
                 </div>
 
                 {/* Information Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Card className="border-blue-200 dark:border-blue-800">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center space-x-2 text-blue-800 dark:text-blue-200">
-                                <Shield className="w-5 h-5" />
-                                <span>Security Features</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">End-to-end encryption</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">TOTP authentication</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Audit trail logging</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Role-based access</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-purple-200 dark:border-purple-800">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
-                                <Heart className="w-5 h-5" />
-                                <span>Medical Data</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Critical allergies</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Current medications</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Emergency contacts</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Chronic conditions</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-orange-200 dark:border-orange-800">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center space-x-2 text-orange-800 dark:text-orange-200">
-                                <Clock className="w-5 h-5" />
-                                <span>Emergency Ready</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Instant access</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Emergency override</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">Offline capable</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                <span className="text-sm">24/7 availability</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                <UMIDStatsDisplay stats={stats} isLoading={isLoading} />
 
                 {/* Main Interface */}
                 <Card className="border-2 border-gray-200 dark:border-gray-700">
                     <CardContent className="p-0">
                         <Tabs value={activeTab} onValueChange={setActiveTab}>
                             <div className="border-b border-gray-200 dark:border-gray-700 p-4">
-                                <TabsList className="grid w-full grid-cols-4">
+                                <TabsList className="grid w-full grid-cols-3">
                                     <TabsTrigger value="overview" className="flex items-center space-x-2">
                                         <Info className="w-4 h-4" />
                                         <span className="hidden sm:inline">Overview</span>
-                                    </TabsTrigger>
-                                    <TabsTrigger 
-                                        value="access" 
-                                        disabled={!canAccess}
-                                        className="flex items-center space-x-2"
-                                    >
-                                        <Scan className="w-4 h-4" />
-                                        <span className="hidden sm:inline">Access</span>
                                     </TabsTrigger>
                                     <TabsTrigger 
                                         value="generate" 
@@ -305,7 +247,7 @@ export default function UMIDMainPage() {
                                     </TabsTrigger>
                                     <TabsTrigger 
                                         value="manage" 
-                                        disabled={!canManage && !isPatient}
+                                        disabled={!canManage}
                                         className="flex items-center space-x-2"
                                     >
                                         <Settings className="w-4 h-4" />
@@ -317,20 +259,20 @@ export default function UMIDMainPage() {
                             <div className="p-6">
                                 <TabsContent value="overview" className="space-y-6 mt-0">
                                     <div className="text-center space-y-4">
-                                        <h3 className="text-2xl font-bold">Welcome to UMID System</h3>
+                                        <h3 className="text-2xl font-bold">Welcome to Your UMID System</h3>
                                         <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                                            The Universal Medical ID system provides secure, instant access to critical 
-                                            patient medical information during emergencies and routine care. Select a 
-                                            feature above to get started.
+                                            Your Universal Medical ID provides healthcare providers with secure, instant access to your 
+                                            critical medical information during emergencies and routine care. Create and manage your 
+                                            UMID to ensure your medical information is always accessible when needed.
                                         </p>
                                     </div>
 
                                     <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/10">
                                         <Info className="w-4 h-4 text-blue-600" />
                                         <AlertDescription className="text-blue-800 dark:text-blue-200">
-                                            <strong>New to UMID?</strong> The Universal Medical ID system uses QR codes 
-                                            and secure authentication to provide healthcare providers with immediate access 
-                                            to patient's critical medical information in emergency situations.
+                                            <strong>Your Medical Safety Net:</strong> Your UMID contains critical medical information 
+                                            like allergies, medications, and emergency contacts. Keep your UMID QR code accessible 
+                                            (wallet, phone, medical bracelet) for emergency situations.
                                         </AlertDescription>
                                     </Alert>
 
@@ -339,49 +281,38 @@ export default function UMIDMainPage() {
                                             <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
                                                 <span className="text-green-600 dark:text-green-400 font-bold">1</span>
                                             </div>
-                                            <h4 className="font-semibold">Generate UMID</h4>
+                                            <h4 className="font-semibold">Create Your UMID</h4>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                Create a secure QR code with patient's critical medical data
+                                                Generate a secure QR code with your critical medical information
                                             </p>
                                         </div>
                                         <div className="space-y-2">
                                             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto">
                                                 <span className="text-blue-600 dark:text-blue-400 font-bold">2</span>
                                             </div>
-                                            <h4 className="font-semibold">Patient Carries UMID</h4>
+                                            <h4 className="font-semibold">Keep It Accessible</h4>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                Patient keeps QR code accessible for emergency situations
+                                                Store your UMID QR code where you can easily access it in emergencies
                                             </p>
                                         </div>
                                         <div className="space-y-2">
                                             <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto">
                                                 <span className="text-purple-600 dark:text-purple-400 font-bold">3</span>
                                             </div>
-                                            <h4 className="font-semibold">Emergency Access</h4>
+                                            <h4 className="font-semibold">Emergency Ready</h4>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                Healthcare providers scan and authenticate for instant access
+                                                Healthcare providers can instantly access your medical information
                                             </p>
                                         </div>
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="access" className="mt-0">
-                                    <UMIDAccessScanner
-                                        staffId={user.id}
-                                        staffRole={user.role}
-                                        onAccessSuccess={(data) => {
-                                            console.log('Access successful:', data);
-                                        }}
-                                        onAccessFailed={(error) => {
-                                            console.error('Access failed:', error);
-                                        }}
-                                    />
-                                </TabsContent>
-
                                 <TabsContent value="generate" className="mt-0">
                                     <UMIDGenerator
-                                        onGenerated={(umid) => {
+                                        initialPatientId={user.id}
+                                        onGenerated={async (umid) => {
                                             console.log('UMID generated:', umid);
+                                            await refreshData(); // Refresh the data to show new UMID
                                             setActiveTab('manage');
                                         }}
                                     />
@@ -405,7 +336,7 @@ export default function UMIDMainPage() {
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-600 dark:text-gray-400 space-y-2">
                     <p>
-                        HealthSphere Universal Medical ID System • Secure • Reliable • Instant
+                        Your HealthSphere Universal Medical ID • Secure • Personal • Life-Saving
                     </p>
                     <div className="flex items-center justify-center space-x-4">
                         <div className="flex items-center space-x-1">

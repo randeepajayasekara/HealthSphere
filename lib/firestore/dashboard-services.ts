@@ -17,12 +17,36 @@ import {
   onSnapshot, 
   serverTimestamp,
   writeBatch,
-  getDocs
+  getDocs,
+  Timestamp
 } from 'firebase/firestore';
 import { db } from '@/backend/config';
 import { sanitizeMedicalData, logSecurityEvent } from '@/app/utils/security';
 import type { DashboardLayout, WidgetConfig, WidgetData } from '@/app/utils/widgets';
 import type { UniversalMedicalID, UMIDAccessLog } from '@/app/types';
+
+/**
+ * Safely converts Firestore timestamp to Date
+ */
+function convertFirestoreTimestamp(timestamp: any): Date | undefined {
+  if (!timestamp) return undefined;
+  if (timestamp instanceof Date) return timestamp;
+  if (timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate();
+  }
+  if (timestamp && timestamp.seconds) {
+    return new Date(timestamp.seconds * 1000);
+  }
+  return undefined;
+}
+
+/**
+ * Safely converts Firestore timestamp to Date with fallback
+ */
+function convertFirestoreTimestampWithFallback(timestamp: any, fallback: Date = new Date()): Date {
+  const converted = convertFirestoreTimestamp(timestamp);
+  return converted || fallback;
+}
 
 /**
  * Dashboard Layout Services
@@ -73,8 +97,8 @@ export class DashboardService {
 
       return {
         ...data,
-        createdAt: data.createdAt instanceof Date ? data.createdAt : (data.createdAt as any).toDate(),
-        updatedAt: data.updatedAt instanceof Date ? data.updatedAt : (data.updatedAt as any).toDate()
+        createdAt: convertFirestoreTimestampWithFallback(data.createdAt),
+        updatedAt: convertFirestoreTimestampWithFallback(data.updatedAt)
       };
     } catch (error) {
       await logSecurityEvent(userId, 'DASHBOARD_LOAD', 'DASHBOARD_LAYOUT', false, { error });
@@ -100,8 +124,8 @@ export class DashboardService {
         const data = doc.data() as DashboardLayout;
         layouts.push({
           ...data,
-          createdAt: data.createdAt instanceof Date ? data.createdAt : (data.createdAt as any).toDate(),
-          updatedAt: data.updatedAt instanceof Date ? data.updatedAt : (data.updatedAt as any).toDate()
+          createdAt: convertFirestoreTimestampWithFallback(data.createdAt),
+          updatedAt: convertFirestoreTimestampWithFallback(data.updatedAt)
         });
       });
 
@@ -172,8 +196,8 @@ export class DashboardService {
           const data = doc.data() as DashboardLayout;
           callback({
             ...data,
-            createdAt: data.createdAt instanceof Date ? data.createdAt : (data.createdAt as any).toDate(),
-            updatedAt: data.updatedAt instanceof Date ? data.updatedAt : (data.updatedAt as any).toDate()
+            createdAt: convertFirestoreTimestampWithFallback(data.createdAt),
+            updatedAt: convertFirestoreTimestampWithFallback(data.updatedAt)
           });
         } else {
           callback(null);
@@ -238,10 +262,8 @@ export class UMIDService {
       
       return {
         ...data,
-        issueDate: data.issueDate instanceof Date ? data.issueDate : (data.issueDate as any).toDate(),
-        lastAccessDate: data.lastAccessDate ? 
-          (data.lastAccessDate instanceof Date ? data.lastAccessDate : (data.lastAccessDate as any).toDate()) : 
-          undefined
+        issueDate: convertFirestoreTimestampWithFallback(data.issueDate),
+        lastAccessDate: convertFirestoreTimestamp(data.lastAccessDate)
       };
     } catch (error) {
       console.error('Error fetching UMID:', error);
@@ -331,10 +353,8 @@ export class UMIDService {
           const data = doc.data() as UniversalMedicalID;
           callback({
             ...data,
-            issueDate: data.issueDate instanceof Date ? data.issueDate : (data.issueDate as any).toDate(),
-            lastAccessDate: data.lastAccessDate ? 
-              (data.lastAccessDate instanceof Date ? data.lastAccessDate : (data.lastAccessDate as any).toDate()) : 
-              undefined
+            issueDate: convertFirestoreTimestampWithFallback(data.issueDate),
+            lastAccessDate: convertFirestoreTimestamp(data.lastAccessDate)
           });
         } else {
           callback(null);
