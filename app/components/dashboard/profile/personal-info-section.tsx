@@ -153,7 +153,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
         </CardHeader>
         
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* First Name */}
             <div className="space-y-2">
               <Label htmlFor="firstName" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -167,7 +167,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                   className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                 />
               ) : (
-                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-words">
                   {user.firstName || "Not provided"}
                 </div>
               )}
@@ -186,7 +186,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                   className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                 />
               ) : (
-                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-words">
                   {user.lastName || "Not provided"}
                 </div>
               )}
@@ -237,7 +237,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
             </div>
 
             {/* Phone */}
-            <div className="space-y-2 md:col-span-2">
+            <div className="space-y-2 lg:col-span-2">
               <Label htmlFor="phone" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Phone Number
               </Label>
@@ -251,7 +251,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                   className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                 />
               ) : (
-                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-all">
                   {user.phone || "Not provided"}
                 </div>
               )}
@@ -291,7 +291,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* City */}
               <div className="space-y-2">
                 <Label htmlFor="city" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -306,7 +306,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                     className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                   />
                 ) : (
-                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-words">
                     {user.address?.city || "Not provided"}
                   </div>
                 )}
@@ -326,7 +326,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                     className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                   />
                 ) : (
-                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-words">
                     {user.address?.state || "Not provided"}
                   </div>
                 )}
@@ -366,7 +366,7 @@ export function PersonalInfoSection({ user }: PersonalInfoSectionProps) {
                     className="border-zinc-200 dark:border-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-400"
                   />
                 ) : (
-                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100">
+                  <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 break-words">
                     {user.address?.country || "Not provided"}
                   </div>
                 )}
