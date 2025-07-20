@@ -30,6 +30,7 @@ import {
     Prescription, 
     MedicalRecord, 
     LabResult,
+    TelemedicineSession,
     QueryParams,
     ApiResponse,
     PaginationParams,
@@ -235,41 +236,6 @@ export class DoctorService {
     }
 
     /**
-     * Create medical record
-     */
-    static async createMedicalRecord(
-        recordData: Omit<MedicalRecord, 'id' | 'createdAt' | 'updatedAt'>
-    ): Promise<ApiResponse<MedicalRecord>> {
-        try {
-            const recordWithTimestamps = {
-                ...recordData,
-                createdAt: Timestamp.now(),
-                updatedAt: Timestamp.now()
-            };
-
-            const docRef = await addDoc(
-                collection(db, this.MEDICAL_RECORDS_COLLECTION),
-                recordWithTimestamps
-            );
-
-            return {
-                data: {
-                    id: docRef.id,
-                    ...recordWithTimestamps,
-                    date: recordWithTimestamps.date || recordWithTimestamps.createdAt.toDate(),
-                    createdAt: recordWithTimestamps.createdAt.toDate(),
-                    updatedAt: recordWithTimestamps.updatedAt.toDate()
-                } as MedicalRecord
-            };
-        } catch (error) {
-            console.error('Error creating medical record:', error);
-            return {
-                error: { status: 500, message: 'Failed to create medical record' }
-            };
-        }
-    }
-
-    /**
      * Get patient lab results for doctor review
      */
     static async getPatientLabResults(
@@ -462,6 +428,338 @@ export class DoctorService {
         // This would need actual start/end times in the appointment data
         // For now, return a placeholder
         return 30; // minutes
+    }
+
+    /**
+     * Get medical records for a specific patient
+     */
+    static async getPatientMedicalRecords(
+        patientId: string,
+        queryParams?: QueryParams
+    ): Promise<ApiResponse<MedicalRecord[]>> {
+        try {
+            let recordsQuery = query(
+                collection(db, this.MEDICAL_RECORDS_COLLECTION),
+                where('patientId', '==', patientId)
+            );
+
+            // Apply filters
+            if (queryParams?.filter?.recordType) {
+                recordsQuery = query(
+                    recordsQuery,
+                    where('type', '==', queryParams.filter.recordType)
+                );
+            }
+
+            // Apply date range filtering
+            if (queryParams?.filter?.dateRange) {
+                const { startDate, endDate } = queryParams.filter.dateRange;
+                recordsQuery = query(
+                    recordsQuery,
+                    where('date', '>=', Timestamp.fromDate(startDate)),
+                    where('date', '<=', Timestamp.fromDate(endDate))
+                );
+            }
+
+            // Apply sorting
+            recordsQuery = query(recordsQuery, orderBy('date', 'desc'));
+
+            // Apply pagination
+            if (queryParams?.pagination?.limit) {
+                recordsQuery = query(recordsQuery, limit(queryParams.pagination.limit));
+            }
+
+            const querySnapshot = await getDocs(recordsQuery);
+            const records = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                date: doc.data().date?.toDate(),
+                createdAt: doc.data().createdAt?.toDate(),
+                updatedAt: doc.data().updatedAt?.toDate()
+            })) as MedicalRecord[];
+
+            return { data: records };
+        } catch (error) {
+            console.error('Error fetching patient medical records:', error);
+            return {
+                error: { status: 500, message: 'Failed to fetch medical records' }
+            };
+        }
+    }
+
+    /**
+     * Create a new medical record
+     */
+    static async createMedicalRecord(
+        medicalRecord: Omit<MedicalRecord, 'id' | 'createdAt' | 'updatedAt'>
+    ): Promise<ApiResponse<MedicalRecord>> {
+        try {
+            const recordData = {
+                ...medicalRecord,
+                date: Timestamp.fromDate(medicalRecord.date),
+                createdAt: Timestamp.now(),
+                updatedAt: Timestamp.now()
+            };
+
+            const docRef = await addDoc(collection(db, this.MEDICAL_RECORDS_COLLECTION), recordData);
+            
+            return {
+                data: {
+                    id: docRef.id,
+                    ...medicalRecord,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }
+            };
+        } catch (error) {
+            console.error('Error creating medical record:', error);
+            return {
+                error: { status: 500, message: 'Failed to create medical record' }
+            };
+        }
+    }
+
+    /**
+     * Update a medical record
+     */
+    static async updateMedicalRecord(
+        recordId: string,
+        updateData: Partial<MedicalRecord>
+    ): Promise<ApiResponse<MedicalRecord>> {
+        try {
+            const docRef = doc(db, this.MEDICAL_RECORDS_COLLECTION, recordId);
+            
+            const sanitizedData: any = {
+                ...updateData,
+                updatedAt: Timestamp.now()
+            };
+
+            if (updateData.date) {
+                sanitizedData.date = Timestamp.fromDate(updateData.date);
+            }
+
+            await updateDoc(docRef, sanitizedData);
+            
+            const updatedDoc = await getDoc(docRef);
+            if (updatedDoc.exists()) {
+                return {
+                    data: {
+                        id: updatedDoc.id,
+                        ...updatedDoc.data(),
+                        date: updatedDoc.data().date?.toDate(),
+                        createdAt: updatedDoc.data().createdAt?.toDate(),
+                        updatedAt: updatedDoc.data().updatedAt?.toDate()
+                    } as MedicalRecord
+                };
+            }
+
+            return {
+                error: { status: 404, message: 'Medical record not found' }
+            };
+        } catch (error) {
+            console.error('Error updating medical record:', error);
+            return {
+                error: { status: 500, message: 'Failed to update medical record' }
+            };
+        }
+    }
+
+    /**
+     * Get all medical records for patients under doctor's care
+     */
+    static async getDoctorPatientMedicalRecords(
+        doctorId: string,
+        queryParams?: QueryParams
+    ): Promise<ApiResponse<MedicalRecord[]>> {
+        try {
+            // First get all patients under this doctor's care
+            const patientsResponse = await this.getDoctorPatients(doctorId);
+            if (patientsResponse.error) {
+                return {
+                    error: patientsResponse.error
+                };
+            }
+
+            const patientIds = patientsResponse.data?.map(p => p.id) || [];
+            
+            if (patientIds.length === 0) {
+                return { data: [] };
+            }
+
+            // Get medical records for these patients
+            let recordsQuery = query(
+                collection(db, this.MEDICAL_RECORDS_COLLECTION),
+                where('patientId', 'in', patientIds.slice(0, 10)) // Firestore 'in' limit
+            );
+
+            // Apply sorting
+            recordsQuery = query(recordsQuery, orderBy('date', 'desc'));
+
+            // Apply pagination
+            if (queryParams?.pagination?.limit) {
+                recordsQuery = query(recordsQuery, limit(queryParams.pagination.limit));
+            }
+
+            const querySnapshot = await getDocs(recordsQuery);
+            const records = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                date: doc.data().date?.toDate(),
+                createdAt: doc.data().createdAt?.toDate(),
+                updatedAt: doc.data().updatedAt?.toDate()
+            })) as MedicalRecord[];
+
+            return { data: records };
+        } catch (error) {
+            console.error('Error fetching doctor patient medical records:', error);
+            return {
+                error: { status: 500, message: 'Failed to fetch medical records' }
+            };
+        }
+    }
+
+    /**
+     * Get telemedicine sessions for a doctor
+     */
+    static async getTelemedicineSessions(
+        doctorId: string,
+        queryParams?: QueryParams
+    ): Promise<ApiResponse<TelemedicineSession[]>> {
+        try {
+            let sessionsQuery = query(
+                collection(db, 'telemedicine_sessions'),
+                where('doctorId', '==', doctorId)
+            );
+
+            // Apply status filtering
+            if (queryParams?.filter?.status) {
+                sessionsQuery = query(
+                    sessionsQuery,
+                    where('status', '==', queryParams.filter.status)
+                );
+            }
+
+            // Apply date range filtering
+            if (queryParams?.filter?.dateRange) {
+                const { startDate, endDate } = queryParams.filter.dateRange;
+                sessionsQuery = query(
+                    sessionsQuery,
+                    where('scheduledTime', '>=', Timestamp.fromDate(startDate)),
+                    where('scheduledTime', '<=', Timestamp.fromDate(endDate))
+                );
+            }
+
+            // Apply sorting
+            sessionsQuery = query(sessionsQuery, orderBy('scheduledTime', 'desc'));
+
+            // Apply pagination
+            if (queryParams?.pagination?.limit) {
+                sessionsQuery = query(sessionsQuery, limit(queryParams.pagination.limit));
+            }
+
+            const querySnapshot = await getDocs(sessionsQuery);
+            const sessions = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                scheduledTime: doc.data().scheduledTime?.toDate(),
+                startTime: doc.data().startTime?.toDate(),
+                endTime: doc.data().endTime?.toDate(),
+                createdAt: doc.data().createdAt?.toDate(),
+                updatedAt: doc.data().updatedAt?.toDate()
+            })) as TelemedicineSession[];
+
+            return { data: sessions };
+        } catch (error) {
+            console.error('Error fetching telemedicine sessions:', error);
+            return {
+                error: { status: 500, message: 'Failed to fetch telemedicine sessions' }
+            };
+        }
+    }
+
+    /**
+     * Create a new telemedicine session
+     */
+    static async createTelemedicineSession(
+        session: Omit<TelemedicineSession, 'id' | 'createdAt' | 'updatedAt'>
+    ): Promise<ApiResponse<TelemedicineSession>> {
+        try {
+            const sessionData = {
+                ...session,
+                scheduledTime: Timestamp.fromDate(session.scheduledTime),
+                createdAt: Timestamp.now(),
+                updatedAt: Timestamp.now()
+            };
+
+            const docRef = await addDoc(collection(db, 'telemedicine_sessions'), sessionData);
+            
+            return {
+                data: {
+                    id: docRef.id,
+                    ...session,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }
+            };
+        } catch (error) {
+            console.error('Error creating telemedicine session:', error);
+            return {
+                error: { status: 500, message: 'Failed to create telemedicine session' }
+            };
+        }
+    }
+
+    /**
+     * Update telemedicine session
+     */
+    static async updateTelemedicineSession(
+        sessionId: string,
+        updateData: Partial<TelemedicineSession>
+    ): Promise<ApiResponse<TelemedicineSession>> {
+        try {
+            const docRef = doc(db, 'telemedicine_sessions', sessionId);
+            
+            const sanitizedData: any = {
+                ...updateData,
+                updatedAt: Timestamp.now()
+            };
+
+            if (updateData.scheduledTime) {
+                sanitizedData.scheduledTime = Timestamp.fromDate(updateData.scheduledTime);
+            }
+            if (updateData.startTime) {
+                sanitizedData.startTime = Timestamp.fromDate(updateData.startTime);
+            }
+            if (updateData.endTime) {
+                sanitizedData.endTime = Timestamp.fromDate(updateData.endTime);
+            }
+
+            await updateDoc(docRef, sanitizedData);
+            
+            const updatedDoc = await getDoc(docRef);
+            if (updatedDoc.exists()) {
+                return {
+                    data: {
+                        id: updatedDoc.id,
+                        ...updatedDoc.data(),
+                        scheduledTime: updatedDoc.data().scheduledTime?.toDate(),
+                        startTime: updatedDoc.data().startTime?.toDate(),
+                        endTime: updatedDoc.data().endTime?.toDate(),
+                        createdAt: updatedDoc.data().createdAt?.toDate(),
+                        updatedAt: updatedDoc.data().updatedAt?.toDate()
+                    } as TelemedicineSession
+                };
+            }
+
+            return {
+                error: { status: 404, message: 'Telemedicine session not found' }
+            };
+        } catch (error) {
+            console.error('Error updating telemedicine session:', error);
+            return {
+                error: { status: 500, message: 'Failed to update telemedicine session' }
+            };
+        }
     }
 }
 
