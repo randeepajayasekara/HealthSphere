@@ -240,6 +240,6 @@ The platform adapts to organizations of all sizes, from small clinics to large h
   
 **Built by Team QUARISTA** | **Enterprise Healthcare Solutions**
 
-[Documentation](https://hsphere.vercel.app/guide) • [Security](https://hsphere.vercel.app/security) • [Privacy](https://hsphere.vercel.app/privacy) • [Contact](https://hsphere.vercel.app/contact)
+[Documentation](https://hsphere.vercel.app/guide) • [Accessibility](https://hsphere.vercel.app/accessibility) • [Privacy](https://hsphere.vercel.app/privacy) • [Contact](https://hsphere.vercel.app/contact)
 
 </div>
