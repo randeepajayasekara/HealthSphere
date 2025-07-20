@@ -6,7 +6,7 @@ The HealthSphere Profile System is designed as a modular, role-based architectur
 
 ## Architecture Overview
 
-``` bash
+```bash
 Profile System
 ├── Core Context Layer (profile-context.tsx)
 ├── UI Components Layer (profile sections)
@@ -50,18 +50,18 @@ Each profile section is a standalone component that can be integrated independen
 
 ### Collection Structure
 
-``` typescript
-users/{userId}                    // Main user document
-patients/{userId}                 // Patient-specific data
-doctors/{userId}                  // Doctor-specific data
-nurses/{userId}                   // Nurse-specific data
-admins/{userId}                   // Admin-specific data
-receptionists/{userId}            // Receptionist-specific data
-pharmacists/{userId}              // Pharmacist-specific data
-labTechnicians/{userId}           // Lab technician-specific data
-hospitalManagement/{userId}       // Hospital management-specific data
-userPreferences/{userId}          // User preferences
-accessibilitySettings/{userId}    // Accessibility settings
+```typescript
+users / { userId }; // Main user document
+patients / { userId }; // Patient-specific data
+doctors / { userId }; // Doctor-specific data
+nurses / { userId }; // Nurse-specific data
+admins / { userId }; // Admin-specific data
+receptionists / { userId }; // Receptionist-specific data
+pharmacists / { userId }; // Pharmacist-specific data
+labTechnicians / { userId }; // Lab technician-specific data
+hospitalManagement / { userId }; // Hospital management-specific data
+userPreferences / { userId }; // User preferences
+accessibilitySettings / { userId }; // Accessibility settings
 ```
 
 ### Adding New Collections
