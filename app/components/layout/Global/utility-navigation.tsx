@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -173,7 +174,7 @@ export default function UtilityNavigation() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [notifications] = useState(3); // Mock notification count
+  const [notifications] = useState(0); // Mock notification count
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -314,13 +315,16 @@ export default function UtilityNavigation() {
       <div className="flex items-center gap-2">
         {/* Notifications */}
         <div className="relative">
-          <Button
+            <Button
             variant="ghost"
             size="icon"
             className="w-10 h-10 rounded-xl hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-          >
+            onClick={() => toast('No notifications, check back later!', {
+              position: 'top-center',
+            })}
+            >
             <Bell className="w-5 h-5" />
-          </Button>
+            </Button>
           {notifications > 0 && (
             <Badge className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs bg-red-500 hover:bg-red-500">
               {notifications}
