@@ -499,22 +499,6 @@ export default function DoctorDashboard() {
               </CardContent>
             </Card>
           </div>
-          
-          {/* Data Seeding Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Database className="h-5 w-5 mr-2 text-red-600" />
-                Development Tools
-              </CardTitle>
-              <CardDescription>
-                Tools for testing and development
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DoctorDataSeedingButton />
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>
