@@ -20,6 +20,10 @@ HealthSphere is a comprehensive healthcare management platform designed to strea
 
 The platform addresses critical needs in modern healthcare facilities including efficient patient management, intelligent appointment scheduling, secure medical record keeping, and seamless healthcare provider coordination. Built with scalability and security at its core, HealthSphere transforms traditional healthcare workflows into efficient digital processes.
 
+Access login credentials for different roles:
+
+- [Credentials](#credentials)
+
 ## Architecture Overview
 
 HealthSphere implements a modern, cloud-native healthcare management system built on Next.js 14+ with App Router architecture. The platform leverages server-side rendering, edge runtime optimizations, and React Server Components for optimal performance and SEO. This enterprise-grade solution is designed to handle complex healthcare workflows while maintaining HIPAA compliance and ensuring maximum uptime for critical healthcare operations.
@@ -233,6 +237,15 @@ The platform adapts to organizations of all sizes, from small clinics to large h
 - **Mobile Health Apps**: Companion mobile applications for patients and providers
 - **AI-Powered Insights**: Machine learning algorithms for predictive analytics and decision support
 - **Real-time Monitoring**: Live patient monitoring and alert systems for critical care scenarios
+
+## Credentials
+
+**\*For Exploring\*\***
+
+| Email                     | Password    |
+| ------------------------- | ----------- |
+| patient.test@example.com  | Patient123! |
+| dr.smith@healthsphere.com | Doctor123!  |
 
 ---
 
