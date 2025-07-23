@@ -7,9 +7,9 @@
   </a>
   <h3>Enterprise Healthcare Management Platform</h3>
 
-<a href="https://qapi.vercel.app"><img alt="QUARISTA logo" src="https://img.shields.io/badge/MADE%20BY%20TEAM%20QUARISTA-000000.svg?style=for-the-badge&logo=Vercel&labelColor=000"></a>
+<a href="https://hsphere.vercel.app/"><img alt="QUARISTA logo" src="https://img.shields.io/badge/MADE%20BY%20TEAM%20QUARISTA-000000.svg?style=for-the-badge&logo=Vercel&labelColor=000"></a>
 <a href="https://www.npmjs.com/"><img alt="NPM version" src="https://img.shields.io/npm/v/next.svg?style=for-the-badge&labelColor=000000"></a>
-<a href="https://github.com/randeepajayasekara/quarista-management-panel/license.md"><img alt="License" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000"></a>
+<a href="https://github.com/randeepajayasekara/HealthSphere/blob/main/SECURITY.md"><img alt="License" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000"></a>
 
 </div>
 <hr/>
