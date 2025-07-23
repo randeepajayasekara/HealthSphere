@@ -240,7 +240,7 @@ The platform adapts to organizations of all sizes, from small clinics to large h
 
 ## Credentials
 
-**\*For Exploring\*\***
+***For Exploring***
 
 | Email                     | Password    |
 | ------------------------- | ----------- |
